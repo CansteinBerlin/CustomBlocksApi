@@ -1,0 +1,4 @@
+name: CustomBlocksApi
+version: '${project.version}'
+main: de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin
+api-version: 1.19
