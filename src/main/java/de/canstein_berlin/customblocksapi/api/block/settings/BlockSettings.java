@@ -8,9 +8,11 @@ import org.bukkit.Material;
 public class BlockSettings {
 
     private Material baseBlock; // Base Block that is placed.
+    private Material displayMaterial; // Material inside the displayEntity
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
+        displayMaterial = Material.STICK;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -23,5 +25,13 @@ public class BlockSettings {
 
     public void setBaseBlock(Material baseBlock) {
         this.baseBlock = baseBlock;
+    }
+
+    public Material getDisplayMaterial() {
+        return displayMaterial;
+    }
+
+    public void setDisplayMaterial(Material displayMaterial) {
+        this.displayMaterial = displayMaterial;
     }
 }

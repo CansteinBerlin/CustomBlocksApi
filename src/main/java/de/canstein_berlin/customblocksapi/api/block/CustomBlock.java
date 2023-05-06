@@ -5,6 +5,7 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -46,12 +47,20 @@ public class CustomBlock {
      * @param location Location where to create the block.
      */
     public void create(Location location) {
-        System.out.println("Place at Location " + location);
+        final Location loc = location.toBlockLocation();
+
+        //Spawn Display Entity
+        loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
+            entity.setItemStack(new ItemStack(settings.getDisplayMaterial()));
+            entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
+        });
+
+        //Set Block
         new BukkitRunnable() {
 
             @Override
             public void run() {
-                location.getBlock().setType(settings.getBaseBlock());
+                loc.getBlock().setType(settings.getBaseBlock());
             }
         }.runTaskLater(CustomBlocksApiPlugin.getInstance(), 1);
     }

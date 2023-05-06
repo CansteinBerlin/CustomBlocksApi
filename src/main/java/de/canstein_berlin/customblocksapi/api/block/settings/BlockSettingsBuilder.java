@@ -40,11 +40,22 @@ public class BlockSettingsBuilder {
     /**
      * Change the base block's material of the block
      *
-     * @param m Material to set default Material.AIR
+     * @param material Material to set default Material.AIR
      * @return
      */
-    public BlockSettingsBuilder withBaseBlock(Material m) {
-        settings.setBaseBlock(m);
+    public BlockSettingsBuilder withBaseBlock(Material material) {
+        settings.setBaseBlock(material);
+        return this;
+    }
+
+    /**
+     * Change the block's display material
+     *
+     * @param material Material to set default Material.AIR
+     * @return
+     */
+    public BlockSettingsBuilder withDisplayMaterial(Material material) {
+        this.settings.setDisplayMaterial(material);
         return this;
     }
 
