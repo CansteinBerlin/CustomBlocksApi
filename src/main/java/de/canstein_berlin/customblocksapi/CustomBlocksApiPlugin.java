@@ -1,17 +1,42 @@
 package de.canstein_berlin.customblocksapi;
 
+import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettingsBuilder;
+import de.canstein_berlin.customblocksapi.commands.ConvertToPlaceBlockItem;
+import de.canstein_berlin.customblocksapi.listener.BlockManageListener;
+import de.canstein_berlin.customblocksapi.test.TestBlock;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CustomBlocksApiPlugin extends JavaPlugin {
 
+    public static TestBlock TEST_BLOCK;
+    private static CustomBlocksApiPlugin instance;
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        instance = this;
+        TEST_BLOCK = new TestBlock(BlockSettingsBuilder.empty()
+                .withBaseBlock(Material.IRON_BLOCK)
+                .build()
+        );
+        CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
 
+        //Test Commands
+        getCommand("convertToPlaceable").setExecutor(new ConvertToPlaceBlockItem());
+
+        Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);
+    }
+
+    public static CustomBlocksApiPlugin getInstance() {
+        return instance;
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
+
+
 }
