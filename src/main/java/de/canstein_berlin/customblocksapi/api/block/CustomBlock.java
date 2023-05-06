@@ -46,6 +46,7 @@ public class CustomBlock {
      * @param location Location where to create the block.
      */
     public void create(Location location) {
+        System.out.println("Place at Location " + location);
         new BukkitRunnable() {
 
             @Override
