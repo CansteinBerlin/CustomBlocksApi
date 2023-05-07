@@ -4,6 +4,7 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
@@ -65,6 +66,17 @@ public class CustomBlock {
         }.runTaskLater(CustomBlocksApiPlugin.getInstance(), 1);
     }
 
+    /**
+     * Called when a block should be removed
+     *
+     * @param validDisplay Underlying ItemDisplay
+     * @param loc          Location of the block
+     */
+    public void remove(ItemDisplay validDisplay, Location loc) {
+        validDisplay.remove();
+        loc.getBlock().setType(Material.AIR);
+    }
+
     public NamespacedKey getKey() {
         return key;
     }
@@ -76,4 +88,6 @@ public class CustomBlock {
     public void setKey(NamespacedKey key) {
         this.key = key;
     }
+
+
 }
