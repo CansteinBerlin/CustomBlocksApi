@@ -2,7 +2,9 @@ package de.canstein_berlin.customblocksapi.listener;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -70,6 +73,14 @@ public class BlockManageListener implements Listener {
 
         //Place Block
         placeBlockInWorld(key, placeLocation);
+
+        //Remove Item
+        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) || event.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) // Infinite Items in GameMode
+            return;
+
+        ItemStack stack = event.getItem();
+        stack.setAmount(stack.getAmount() - 1);
+        if (stack.getAmount() <= 0) event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
     }
 
     /**
