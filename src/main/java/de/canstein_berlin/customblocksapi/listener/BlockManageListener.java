@@ -4,11 +4,13 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.TileState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -26,7 +28,7 @@ public class BlockManageListener implements Listener {
      */
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
-        if (!event.getAction().isRightClick()) return; // Ignore Left Click
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return; // Ignore Left Click
         if (!event.getHand().equals(EquipmentSlot.HAND)) return; //Only use Main Hand.
         if (event.getItem() == null) return; // Check if item not air
         if (event.getInteractionPoint() == null) return; // Check if clicked on Block
@@ -34,6 +36,12 @@ public class BlockManageListener implements Listener {
         //Get Key from Item
         NamespacedKey key = getKeyFromPersistentDataContainer(event.getItem().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
+
+        System.out.println(event.getClickedBlock().getState());
+
+
+        if ((event.getClickedBlock().getState() instanceof TileState) && !event.getPlayer().isSneaking())
+            return; // Interacting with chests
         event.setCancelled(true);
 
         //Get and Verify location
