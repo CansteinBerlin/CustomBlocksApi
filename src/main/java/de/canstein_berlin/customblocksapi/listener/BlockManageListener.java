@@ -78,6 +78,7 @@ public class BlockManageListener implements Listener {
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) || event.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) // Infinite Items in GameMode
             return;
 
+        //Use Item
         ItemStack stack = event.getItem();
         stack.setAmount(stack.getAmount() - 1);
         if (stack.getAmount() <= 0) event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
