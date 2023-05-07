@@ -5,6 +5,7 @@ import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,9 +20,11 @@ public class CustomBlock {
 
     private NamespacedKey key; // Internal identifier of the block
     private BlockSettings settings; //Block's Settings that "control" the block
+    private int customModelData; // Custom Model Data of the Block will be replaced later
 
-    public CustomBlock(BlockSettings settings) {
+    public CustomBlock(BlockSettings settings, int customModelData) {
         this.settings = settings;
+        this.customModelData = customModelData;
     }
 
 
@@ -34,6 +37,7 @@ public class CustomBlock {
     public ItemStack toPlaceItemStack(ItemStack stack) {
         System.out.println("Converted");
         ItemMeta meta = stack.getItemMeta();
+        meta.setCustomModelData(customModelData);
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
         stack.setItemMeta(meta);
@@ -50,8 +54,15 @@ public class CustomBlock {
 
         //Spawn Display Entity
         loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
-            entity.setItemStack(new ItemStack(settings.getDisplayMaterial()));
+            ItemStack stack = new ItemStack(settings.getDisplayMaterial());
+            ItemMeta meta = stack.getItemMeta();
+            meta.setCustomModelData(customModelData);
+            stack.setItemMeta(meta);
+
+            entity.setItemStack(stack);
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
+            entity.setBrightness(new Display.Brightness(15, 15));
+            entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.HEAD);
         });
 
         //Set Block

@@ -19,9 +19,9 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         instance = this;
         TEST_BLOCK = new TestBlock(BlockSettingsBuilder.empty()
                 .withBaseBlock(Material.GLASS)
-                .withDisplayMaterial(Material.CRAFTING_TABLE)
+                .withDisplayMaterial(Material.STICK)
                 .build()
-        );
+                , 1);
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
 
         //Test Commands
