@@ -1,7 +1,6 @@
 package de.canstein_berlin.customblocksapi.api.block;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
-import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class CustomBlock {
 
@@ -57,13 +55,7 @@ public class CustomBlock {
         });
 
         //Set Block
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                loc.getBlock().setType(settings.getBaseBlock());
-            }
-        }.runTaskLater(CustomBlocksApiPlugin.getInstance(), 1);
+        loc.getBlock().setType(settings.getBaseBlock());
     }
 
     /**

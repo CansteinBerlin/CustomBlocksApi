@@ -4,7 +4,6 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.TileState;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemDisplay;
@@ -12,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -20,6 +20,22 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Collection;
 
 public class BlockManageListener implements Listener {
+
+    /**
+     * Disable the placement of blocks when interacting with a block place item and an interactable block like tnt
+     *
+     * @param event
+     */
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        NamespacedKey key = getKeyFromPersistentDataContainer(event.getItemInHand().getItemMeta().getPersistentDataContainer());
+        if (key == null) return;
+
+        CustomBlock block = CustomBlocksApi.getInstance().getCustomBlock(key);
+        if (block == null) return;
+
+        event.setCancelled(true);
+    }
 
     /**
      * Event to listen to the placement of blocks
@@ -32,20 +48,16 @@ public class BlockManageListener implements Listener {
         if (!event.getHand().equals(EquipmentSlot.HAND)) return; //Only use Main Hand.
         if (event.getItem() == null) return; // Check if item not air
         if (event.getInteractionPoint() == null) return; // Check if clicked on Block
+        if (event.getClickedBlock().getType().isInteractable() && !event.getPlayer().isSneaking()) return;
 
         //Get Key from Item
         NamespacedKey key = getKeyFromPersistentDataContainer(event.getItem().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
 
-        System.out.println(event.getClickedBlock().getState());
-
-
-        if ((event.getClickedBlock().getState() instanceof TileState) && !event.getPlayer().isSneaking())
-            return; // Interacting with chests
+        //Cancel Event
         event.setCancelled(true);
 
-        //Get and Verify location
-        //Location placeLocation = event.getInteractionPoint().add(event.getPlayer().getEyeLocation().getDirection().multiply(-0.01)).toBlockLocation();
+        //Get and verify location
         Location placeLocation;
         if (event.getClickedBlock().isReplaceable()) placeLocation = event.getClickedBlock().getLocation();
         else placeLocation = event.getClickedBlock().getLocation().add(event.getBlockFace().getDirection());
@@ -60,6 +72,11 @@ public class BlockManageListener implements Listener {
         placeBlockInWorld(key, placeLocation);
     }
 
+    /**
+     * Event to listen to the breaking of blocks
+     *
+     * @param event
+     */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Location loc = event.getBlock().getLocation();
