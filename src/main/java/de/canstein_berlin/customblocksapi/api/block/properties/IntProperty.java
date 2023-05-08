@@ -1,30 +1,48 @@
 package de.canstein_berlin.customblocksapi.api.block.properties;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 public class IntProperty<T> extends Property<Integer> {
 
-    int min;
-    int max;
+    private final ImmutableSet<Integer> values;
 
-    public IntProperty(String name) {
+    public IntProperty(String name, int min, int max) {
         super(name, Integer.class);
+
+        if (min < 0) {
+            throw new IllegalArgumentException("Min value of " + name + " must be 0 or greater");
+        } else if (max <= min) {
+            throw new IllegalArgumentException("Max value of " + name + " must be greater than min (" + min + ")");
+        } else {
+            Set<Integer> set = Sets.newHashSet();
+
+            for (int i = min; i <= max; ++i) {
+                set.add(i);
+            }
+
+            this.values = ImmutableSet.copyOf(set);
+        }
     }
 
     @Override
     public Collection<Integer> getValues() {
-        ArrayList<Integer> values = new ArrayList<>();
-        for (int i = Math.min(min, max); i < Math.max(min, max); i++) {
-            values.add(i);
+        return values;
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        } else {
+            return object instanceof IntProperty intProperty && super.equals(object) ? this.values.equals(intProperty.values) : false;
         }
-        return new ImmutableList.Builder<Integer>().addAll(values).build();
     }
 
     @Override
     public String name(Integer value) {
-        return String.valueOf(value);
+        return value.toString();
     }
 }

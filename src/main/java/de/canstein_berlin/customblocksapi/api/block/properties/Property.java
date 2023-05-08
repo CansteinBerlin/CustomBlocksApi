@@ -4,8 +4,8 @@ import java.util.Collection;
 
 public abstract class Property<T extends Comparable<T>> {
 
-    private String name;
-    private Class<T> type;
+    private final String name;
+    private final Class<T> type;
 
     public Property(String name, Class<T> type) {
         this.name = name;
@@ -24,27 +24,34 @@ public abstract class Property<T extends Comparable<T>> {
 
     public abstract String name(T value);
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof Property)) {
+            return false;
+        } else {
+            Property<?> property = (Property) obj;
+            return type.equals(property.type) && this.name.equals(property.name);
+        }
+    }
 
-    public static class Value<T extends Comparable<T>> {
-        private final Property<T> property;
-        private final T value;
+    public Property.Value<T> createValue(T value) {
+        return new Property.Value<>(this, value);
+    }
 
+    public record Value<T extends Comparable<T>>(Property<T> property, T value) {
         public Value(Property<T> property, T value) {
-            this.property = property;
-            this.value = value;
+            if (!property.getValues().contains(value)) {
+                throw new IllegalArgumentException("Value " + value + " does not belong to property " + property);
+            } else {
+                this.property = property;
+                this.value = value;
+            }
         }
 
-        public Property<T> getProperty() {
-            return property;
-        }
-
-        public T getValue() {
-            return value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return value.equals(obj);
+        public String toString() {
+            return this.property.getName() + "=" + this.property.name(this.value);
         }
     }
 

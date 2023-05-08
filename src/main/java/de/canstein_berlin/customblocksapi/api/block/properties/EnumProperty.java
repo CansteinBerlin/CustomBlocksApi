@@ -1,23 +1,26 @@
 package de.canstein_berlin.customblocksapi.api.block.properties;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class EnumProperty<T extends Enum<T>> extends Property<T> {
 
     private ImmutableSet<T> values;
-    private Map<String, T> byName;
+    private Map<String, T> byName = Maps.newHashMap();
 
     public EnumProperty(String name, Class<T> type, Collection<T> values) {
         super(name, type);
-        this.values = new ImmutableSet.Builder<T>().addAll(values).build();
+        this.values = ImmutableSet.copyOf(values);
 
-        byName = new HashMap<>();
         for (T value : values) {
-            byName.put(name(value), value);
+            String _name = name(value);
+            if (byName.containsKey(_name)) {
+                throw new IllegalArgumentException("Multiple value has the same name '" + _name + "'");
+            }
+            byName.put(_name, value);
         }
     }
 
@@ -29,6 +32,16 @@ public class EnumProperty<T extends Enum<T>> extends Property<T> {
     @Override
     public String name(T value) {
         return value.name();
+    }
+
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        } else if (object instanceof EnumProperty enumProperty && super.equals(object)) {
+            return this.values.equals(enumProperty.values) && this.byName.equals(enumProperty.byName);
+        } else {
+            return false;
+        }
     }
 
 }
