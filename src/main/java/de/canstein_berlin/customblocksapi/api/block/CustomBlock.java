@@ -1,6 +1,9 @@
 package de.canstein_berlin.customblocksapi.api.block;
 
+import com.google.common.collect.ImmutableMap;
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.api.block.properties.Property;
+import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,12 +24,26 @@ public class CustomBlock {
     private NamespacedKey key; // Internal identifier of the block
     private BlockSettings settings; //Block's Settings that "control" the block
     private int customModelData; // Custom Model Data of the Block will be replaced later
+    private ImmutableMap<String, Property<?>> properties;
+
 
     public CustomBlock(BlockSettings settings, int customModelData) {
         this.settings = settings;
         this.customModelData = customModelData;
+
+        final PropertyListBuilder listBuilder = new PropertyListBuilder(this);
+        appendProperties(listBuilder);
+        properties = ImmutableMap.copyOf(listBuilder.build());
     }
 
+    /**
+     * If you want to add new properties to your block they should be added in this method.
+     *
+     * @param propertyListBuilder PropertyListBuilder to build the property list;
+     * @return
+     */
+    public void appendProperties(PropertyListBuilder propertyListBuilder) {
+    }
 
     /**
      * Method to add the identifier of the block to an item. Used for the place Item
@@ -92,5 +109,11 @@ public class CustomBlock {
         this.key = key;
     }
 
+    public int getCustomModelData() {
+        return customModelData;
+    }
 
+    public ImmutableMap<String, Property<?>> getProperties() {
+        return properties;
+    }
 }

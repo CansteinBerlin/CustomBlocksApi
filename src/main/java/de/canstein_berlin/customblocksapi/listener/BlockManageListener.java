@@ -82,6 +82,7 @@ public class BlockManageListener implements Listener {
         ItemStack stack = event.getItem();
         stack.setAmount(stack.getAmount() - 1);
         if (stack.getAmount() <= 0) event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+
     }
 
     /**
@@ -116,6 +117,8 @@ public class BlockManageListener implements Listener {
     private void placeBlockInWorld(NamespacedKey key, Location loc) {
         CustomBlock customBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
         customBlock.create(loc);
+
+        System.out.println(customBlock.getProperties());
     }
 
     private NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer persistentDataContainer) {

@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Set;
 
-public class IntProperty<T> extends Property<Integer> {
+public class IntProperty extends Property<Integer> {
 
     private final ImmutableSet<Integer> values;
 

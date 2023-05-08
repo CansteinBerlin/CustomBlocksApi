@@ -40,6 +40,15 @@ public abstract class Property<T extends Comparable<T>> {
         return new Property.Value<>(this, value);
     }
 
+    @Override
+    public String toString() {
+        return "Property{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", values=" + getValues() +
+                '}';
+    }
+
     public record Value<T extends Comparable<T>>(Property<T> property, T value) {
         public Value(Property<T> property, T value) {
             if (!property.getValues().contains(value)) {
