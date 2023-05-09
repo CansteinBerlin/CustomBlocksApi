@@ -72,6 +72,18 @@ public abstract class Property<T extends Comparable<T>> {
             }
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof Property.Value<?>)) return false;
+            Property.Value<?> convObj = ((Value<?>) obj);
+            if (!property.equals(convObj.property)) return false;
+            return value.equals(convObj.value);
+
+        }
+
         public String name() {
             return property().name(value);
         }

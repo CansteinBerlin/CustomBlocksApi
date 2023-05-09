@@ -21,7 +21,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .withBaseBlock(Material.GLASS)
                 .withDisplayMaterial(Material.STICK)
                 .build()
-                , 1);
+        );
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
 
         //Test Commands

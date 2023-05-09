@@ -58,9 +58,18 @@ public class CustomBlockState {
                 throw new IllegalArgumentException("Unknown property " + name + " on block " + parentBlock.getKey());
             Property.Value<?> propertyValue = property.parse(value);
             propertyValues.put(property, propertyValue);
-            System.out.println(propertyValue);
+            System.out.println(propertyValue); //TODO: REMOVE
         }
 
+    }
+
+    private CustomBlockState(CustomBlock customBlock, HashMap<Property<?>, Property.Value<?>> properties) {
+        this.parentBlock = customBlock;
+        this.propertyValues = properties;
+    }
+
+    public CustomBlockState clone() {
+        return new CustomBlockState(this.parentBlock, (HashMap<Property<?>, Property.Value<?>>) Map.copyOf(propertyValues));
     }
 
     public <T extends Comparable<T>, V extends T> CustomBlockState with(Property<T> property, V value) {
@@ -100,5 +109,13 @@ public class CustomBlockState {
             containers.add(save);
         }
         dataContainer.set(PROPERTIES_KEY, PersistentDataType.TAG_CONTAINER_ARRAY, containers.toArray(new PersistentDataContainer[0]));
+    }
+
+    public HashMap<Property<?>, Property.Value<?>> getPropertyValues() {
+        return propertyValues;
+    }
+
+    public CustomBlock getParentBlock() {
+        return parentBlock;
     }
 }
