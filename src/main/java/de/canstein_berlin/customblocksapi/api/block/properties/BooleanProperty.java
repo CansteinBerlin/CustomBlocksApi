@@ -26,6 +26,13 @@ public class BooleanProperty extends Property<Boolean> {
     }
 
     @Override
+    public Value<Boolean> parse(String value) {
+        if (value.equalsIgnoreCase("true")) return createValue(true);
+        if (value.equalsIgnoreCase("false")) return createValue(false);
+        return null;
+    }
+
+    @Override
     public String name(Boolean value) {
         return value.toString();
     }

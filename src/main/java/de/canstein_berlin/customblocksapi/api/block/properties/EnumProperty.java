@@ -44,4 +44,10 @@ public class EnumProperty<T extends Enum<T>> extends Property<T> {
         }
     }
 
+    @Override
+    public Value<T> parse(String value) {
+        if (byName.containsKey(value)) return createValue(byName.get(value));
+        return null;
+    }
+
 }

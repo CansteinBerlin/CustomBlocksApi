@@ -42,6 +42,16 @@ public class IntProperty extends Property<Integer> {
     }
 
     @Override
+    public Value<Integer> parse(String value) {
+        try {
+            int intValue = Integer.parseInt(value);
+            if (values.contains(intValue)) return createValue(intValue);
+        } catch (NumberFormatException ignored) {
+        }
+        return null;
+    }
+
+    @Override
     public String name(Integer value) {
         return value.toString();
     }

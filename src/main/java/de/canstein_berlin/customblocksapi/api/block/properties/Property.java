@@ -1,5 +1,7 @@
 package de.canstein_berlin.customblocksapi.api.block.properties;
 
+import com.google.common.collect.Iterables;
+
 import java.util.Collection;
 
 public abstract class Property<T extends Comparable<T>> {
@@ -36,9 +38,14 @@ public abstract class Property<T extends Comparable<T>> {
         }
     }
 
+    public T getDefault() {
+        return Iterables.get(getValues(), 0);
+    }
+
     public Property.Value<T> createValue(T value) {
         return new Property.Value<>(this, value);
     }
+
 
     @Override
     public String toString() {
@@ -49,6 +56,12 @@ public abstract class Property<T extends Comparable<T>> {
                 '}';
     }
 
+    public Value<?> createDefaultValue() {
+        return new Property.Value<>(this, getDefault());
+    }
+
+    public abstract Value<T> parse(String value);
+
     public record Value<T extends Comparable<T>>(Property<T> property, T value) {
         public Value(Property<T> property, T value) {
             if (!property.getValues().contains(value)) {
@@ -57,6 +70,10 @@ public abstract class Property<T extends Comparable<T>> {
                 this.property = property;
                 this.value = value;
             }
+        }
+
+        public String name() {
+            return property().name(value);
         }
 
         public String toString() {

@@ -3,6 +3,7 @@ package de.canstein_berlin.customblocksapi.test;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.*;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.block.BlockFace;
 
 public class TestBlock extends CustomBlock {
@@ -26,5 +27,10 @@ public class TestBlock extends CustomBlock {
     @Override
     public void appendProperties(PropertyListBuilder propertyListBuilder) {
         propertyListBuilder.add(ENABLED, FACING, AGE0_5);
+    }
+
+    @Override
+    public CustomBlockState setDefaultState(CustomBlockState defaultState) {
+        return defaultState.with(ENABLED, false).with(AGE0_5, 4).with(FACING, BlockFace.SOUTH);
     }
 }

@@ -5,6 +5,7 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,10 +23,11 @@ public class CustomBlock {
 
 
     private NamespacedKey key; // Internal identifier of the block
-    private BlockSettings settings; //Block's Settings that "control" the block
-    private int customModelData; // Custom Model Data of the Block will be replaced later
-    private ImmutableMap<String, Property<?>> properties;
+    private final BlockSettings settings; //Block's Settings that "control" the block
+    private final int customModelData; // Custom Model Data of the Block will be replaced later
+    private final ImmutableMap<String, Property<?>> properties; // Properties of the generic block
 
+    private CustomBlockState defaultState;
 
     public CustomBlock(BlockSettings settings, int customModelData) {
         this.settings = settings;
@@ -34,6 +36,9 @@ public class CustomBlock {
         final PropertyListBuilder listBuilder = new PropertyListBuilder(this);
         appendProperties(listBuilder);
         properties = ImmutableMap.copyOf(listBuilder.build());
+
+        defaultState = new CustomBlockState(this, properties);
+        defaultState = setDefaultState(defaultState);
     }
 
     /**
@@ -43,6 +48,10 @@ public class CustomBlock {
      * @return
      */
     public void appendProperties(PropertyListBuilder propertyListBuilder) {
+    }
+
+    public CustomBlockState setDefaultState(CustomBlockState defaultState) {
+        return defaultState;
     }
 
     /**
@@ -70,7 +79,7 @@ public class CustomBlock {
         final Location loc = location.toBlockLocation();
 
         //Spawn Display Entity
-        loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
+        ItemDisplay display = loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
             ItemStack stack = new ItemStack(settings.getDisplayMaterial());
             ItemMeta meta = stack.getItemMeta();
             meta.setCustomModelData(customModelData);
@@ -80,6 +89,9 @@ public class CustomBlock {
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
             entity.setBrightness(new Display.Brightness(15, 15));
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.HEAD);
+            entity.setViewRange(2);
+
+            defaultState.saveToEntity(entity);
         });
 
         //Set Block
