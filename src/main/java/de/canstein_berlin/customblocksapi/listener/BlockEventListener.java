@@ -1,19 +1,27 @@
 package de.canstein_berlin.customblocksapi.listener;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
-import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.context.ActionResult;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
-
-import java.util.Collection;
-
-import static de.canstein_berlin.customblocksapi.listener.BlockManageListener.getKeyFromPersistentDataContainer;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockEventListener implements Listener {
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUse(PlayerInteractEvent event) {
+        if (!event.getAction().isRightClick()) return;
+        if (event.getClickedBlock() == null) return;
+        if (event.getPlayer().isSneaking()) return;
+
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getClickedBlock().getLocation());
+        if (state == null) return;
+        ActionResult result = state.getParentBlock().onUse(state, event.getClickedBlock().getWorld(), event.getClickedBlock().getLocation(), event.getPlayer(), event.getHand());
+        if (result == ActionResult.SUCCESS) event.setCancelled(true);
+    }
 
     @EventHandler
     public void onNeighborUpdate(BlockPhysicsEvent event) {
@@ -21,24 +29,10 @@ public class BlockEventListener implements Listener {
         if (!CustomBlocksApi.getInstance().getCustomBlockMaterials().contains(event.getBlock().getType()))
             return; // Hopefully performance increase
 
-        Collection<ItemDisplay> displays = event.getBlock().getLocation().toBlockLocation().add(0.5, 0.5, 0.5).getNearbyEntitiesByType(ItemDisplay.class, 0.1);
-        if (displays.size() == 0) return;
-        CustomBlock block = null;
-        ItemDisplay display = null;
-        for (ItemDisplay d : displays) {
-            if (d.getPersistentDataContainer().has(CustomBlock.CUSTOM_BLOCK_KEY)) {
-                NamespacedKey key = getKeyFromPersistentDataContainer(d.getPersistentDataContainer());
-                if (key == null) continue;
-                block = CustomBlocksApi.getInstance().getCustomBlock(key);
-                if (block != null) {
-                    display = d;
-                    break;
-                }
-            }
-        }
-        if (block == null) return;
-        CustomBlockState state = new CustomBlockState(block, display);
-        block.onNeighborUpdate(state, event.getBlock().getWorld(), event.getBlock().getLocation().toBlockLocation(), block, event.getSourceBlock().getLocation().toBlockLocation());
+        //Event Stuff
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
+        if (state == null) return;
+        state.getParentBlock().onNeighborUpdate(state, event.getBlock().getWorld(), event.getBlock().getLocation().toBlockLocation(), state.getParentBlock(), event.getSourceBlock().getLocation().toBlockLocation());
 
     }
 

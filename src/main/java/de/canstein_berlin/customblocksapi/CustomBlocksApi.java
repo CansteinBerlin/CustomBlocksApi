@@ -2,9 +2,13 @@ package de.canstein_berlin.customblocksapi;
 
 import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.ItemDisplay;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,6 +57,27 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     @Override
     public boolean usesNeighborUpdate() {
         return usesNeighborUpdate;
+    }
+
+    @Override
+    public CustomBlockState getStateFromWorld(Location location) {
+        Collection<ItemDisplay> displays = location.toBlockLocation().add(0.5, 0.5, 0.5).getNearbyEntitiesByType(ItemDisplay.class, 0.1);
+        if (displays.size() == 0) return null;
+        CustomBlock block = null;
+        ItemDisplay display = null;
+        for (ItemDisplay d : displays) {
+            if (d.getPersistentDataContainer().has(CustomBlock.CUSTOM_BLOCK_KEY)) {
+                NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(d.getPersistentDataContainer());
+                if (key == null) continue;
+                block = getCustomBlock(key);
+                if (block != null) {
+                    display = d;
+                    break;
+                }
+            }
+        }
+        if (block == null) return null;
+        return new CustomBlockState(block, display);
     }
 
     @Override

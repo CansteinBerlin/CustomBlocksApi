@@ -3,6 +3,7 @@ package de.canstein_berlin.customblocksapi.test;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.*;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.context.ActionResult;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
@@ -11,6 +12,8 @@ import org.bukkit.Axis;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class TestBlock extends CustomBlock {
 
@@ -46,6 +49,12 @@ public class TestBlock extends CustomBlock {
         state.with(ENABLED, location.getBlock().getBlockPower() > 0);
         state.update();
         //System.out.println(state + "\n" + world + "\n" + location + "\n" + block + "\n" + fromPos);
+    }
+
+    @Override
+    public ActionResult onUse(CustomBlockState state, World world, Location location, Player player, EquipmentSlot hand) {
+        player.sendMessage("You clicked me using your " + hand);
+        return ActionResult.SUCCESS;
     }
 
     @Override

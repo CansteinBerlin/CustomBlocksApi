@@ -1,15 +1,16 @@
 package de.canstein_berlin.customblocksapi.listener;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
+import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -18,8 +19,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Collection;
 
@@ -32,7 +31,7 @@ public class BlockManageListener implements Listener {
      */
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        NamespacedKey key = getKeyFromPersistentDataContainer(event.getItemInHand().getItemMeta().getPersistentDataContainer());
+        NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getItemInHand().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
 
         CustomBlock block = CustomBlocksApi.getInstance().getCustomBlock(key);
@@ -48,6 +47,7 @@ public class BlockManageListener implements Listener {
      */
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
+        if (event.isCancelled()) return;
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return; // Ignore Left Click
         if (!event.getHand().equals(EquipmentSlot.HAND)) return; //Only use Main Hand.
         if (event.getItem() == null) return; // Check if item not air
@@ -55,7 +55,7 @@ public class BlockManageListener implements Listener {
         if (event.getClickedBlock().getType().isInteractable() && !event.getPlayer().isSneaking()) return;
 
         //Get Key from Item
-        NamespacedKey key = getKeyFromPersistentDataContainer(event.getItem().getItemMeta().getPersistentDataContainer());
+        NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getItem().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
 
         //Cancel Event
@@ -96,38 +96,17 @@ public class BlockManageListener implements Listener {
      */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Location loc = event.getBlock().getLocation();
-        Collection<ItemDisplay> displays = loc.clone().add(0.5, 0.5, 0.5).getNearbyEntitiesByType(ItemDisplay.class, 0.1);
-        if (displays.size() == 0) return;
-        CustomBlock block = null;
-        ItemDisplay validDisplay = null;
-        for (ItemDisplay display : displays) {
-            if (display.getPersistentDataContainer().has(CustomBlock.CUSTOM_BLOCK_KEY)) {
-                NamespacedKey key = getKeyFromPersistentDataContainer(display.getPersistentDataContainer());
-                if (key == null) continue;
-                block = CustomBlocksApi.getInstance().getCustomBlock(key);
-                if (block != null) {
-                    validDisplay = display;
-                    break;
-                }
-            }
-        }
-        if (block == null) return;
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
+        if (state == null) return;
 
-        block.remove(validDisplay, loc);
+        //Remove Block
+        state.remove(event.getBlock().getLocation());
 
     }
 
     private void placeBlockInWorld(NamespacedKey key, ItemPlacementContext ctx) {
         CustomBlock customBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
         customBlock.create(ctx);
-    }
-
-    protected static NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer persistentDataContainer) {
-        if (!persistentDataContainer.has(CustomBlock.CUSTOM_BLOCK_KEY)) return null;
-        String stringifiedNameSpacedKey = persistentDataContainer.get(CustomBlock.CUSTOM_BLOCK_KEY, PersistentDataType.STRING);
-        if (stringifiedNameSpacedKey == null) return null;
-        return NamespacedKey.fromString(stringifiedNameSpacedKey);
     }
 
 }

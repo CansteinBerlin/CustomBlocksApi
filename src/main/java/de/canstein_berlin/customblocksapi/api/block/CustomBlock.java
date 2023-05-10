@@ -5,6 +5,7 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.context.ActionResult;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
@@ -13,6 +14,8 @@ import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.*;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -148,8 +151,21 @@ public class CustomBlock {
         return defaultState;
     }
 
+    /**
+     * This method is called whenever this block is updated.
+     *
+     * @param state    BlockState of the block at the location
+     * @param world    World the block is in
+     * @param location Location the block is at
+     * @param block    Parent Block class
+     * @param fromPos  Origin location of the update
+     */
     public void onNeighborUpdate(CustomBlockState state, World world, Location location, CustomBlock block, Location fromPos) {
+    }
 
+
+    public ActionResult onUse(CustomBlockState state, World world, Location location, Player player, EquipmentSlot hand) {
+        return ActionResult.FAIL;
     }
 
     public NamespacedKey getKey() {
