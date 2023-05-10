@@ -49,9 +49,11 @@ public class BlockManageListener implements Listener {
     public void onItemUse(PlayerInteractEvent event) {
         if (event.isCancelled()) return;
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return; // Ignore Left Click
+        if (event.getHand() == null) return;
         if (!event.getHand().equals(EquipmentSlot.HAND)) return; //Only use Main Hand.
         if (event.getItem() == null) return; // Check if item not air
         if (event.getInteractionPoint() == null) return; // Check if clicked on Block
+        if (event.getClickedBlock() == null) return;
         if (event.getClickedBlock().getType().isInteractable() && !event.getPlayer().isSneaking()) return;
 
         //Get Key from Item
@@ -85,7 +87,8 @@ public class BlockManageListener implements Listener {
         //Reduce Item stack
         ItemStack stack = event.getItem();
         stack.setAmount(stack.getAmount() - 1);
-        if (stack.getAmount() <= 0) event.getPlayer().setItemInHand(new ItemStack(Material.AIR));
+        if (stack.getAmount() <= 0)
+            event.getPlayer().getInventory().setItem(event.getHand(), new ItemStack(Material.AIR));
 
     }
 

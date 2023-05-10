@@ -97,7 +97,7 @@ public class CustomBlockState {
         if (value == null) {
             throw new IllegalArgumentException("Cannot get property " + property.getName() + " as it does not exist in " + this.parentBlock.getKey());
         }
-        return (T) property.getType().cast(value.value());
+        return property.getType().cast(value.value());
     }
 
     public void saveToEntity(ItemDisplay display) {

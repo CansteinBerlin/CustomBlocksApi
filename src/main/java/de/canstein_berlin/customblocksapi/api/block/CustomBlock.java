@@ -32,11 +32,11 @@ public class CustomBlock {
 
     private NamespacedKey key; // Internal identifier of the block
     private final BlockSettings settings; //Block's Settings that "control" the block
-    private CMDLookupTable customModelDataLookupTable;
+    private final CMDLookupTable customModelDataLookupTable;
     private final ImmutableMap<String, Property<?>> properties; // Properties of the generic block
 
     private CustomBlockState defaultState;
-    private int customModelDataDefault;
+    private final int customModelDataDefault;
 
     public CustomBlock(BlockSettings settings, int customModelDataDefault) {
         this.settings = settings;
@@ -58,7 +58,6 @@ public class CustomBlock {
      * If you want to add new properties to your block they should be added in this method.
      *
      * @param propertyListBuilder PropertyListBuilder to build the property list;
-     * @return
      */
     public void appendProperties(PropertyListBuilder propertyListBuilder) {
     }
@@ -88,14 +87,14 @@ public class CustomBlock {
     /**
      * Method that created the block in the world at a specific location.
      *
-     * @param location Location where to create the block.
+     * @param ctx Context that gives some information about the placement of the block
      */
     public void create(ItemPlacementContext ctx) {
         final Location loc = ctx.getPlacementPosition().toBlockLocation();
         CustomBlockState state = getPlacementState(ctx);
 
         //Spawn Display Entity
-        ItemDisplay display = loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
+        loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
             //Entity Setup
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
             entity.setBrightness(new Display.Brightness(15, 15));

@@ -16,8 +16,8 @@ import java.util.Set;
 public class CustomBlocksApi implements ICustomBlocksApi {
 
     private static CustomBlocksApi instance;
-    private HashMap<NamespacedKey, CustomBlock> registeredCustomBlocks;
-    private HashSet<Material> customBlockMaterials;
+    private final HashMap<NamespacedKey, CustomBlock> registeredCustomBlocks;
+    private final HashSet<Material> customBlockMaterials;
     private boolean usesNeighborUpdate;
 
     public CustomBlocksApi() {

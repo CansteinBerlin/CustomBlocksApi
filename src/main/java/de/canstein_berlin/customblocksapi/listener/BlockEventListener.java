@@ -20,7 +20,7 @@ public class BlockEventListener implements Listener {
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getClickedBlock().getLocation());
         if (state == null) return;
         ActionResult result = state.getParentBlock().onUse(state, event.getClickedBlock().getWorld(), event.getClickedBlock().getLocation(), event.getPlayer(), event.getHand());
-        if (result == ActionResult.SUCCESS) event.setCancelled(true);
+        if (result.isAccepted()) event.setCancelled(true);
     }
 
     @EventHandler

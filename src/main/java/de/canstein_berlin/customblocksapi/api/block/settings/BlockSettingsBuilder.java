@@ -8,7 +8,7 @@ import org.bukkit.Material;
  */
 public class BlockSettingsBuilder {
 
-    private BlockSettings settings;
+    private final BlockSettings settings;
 
     private BlockSettingsBuilder() {
         settings = new BlockSettings();

@@ -6,7 +6,7 @@ public enum ActionResult {
     FAIL; //The Interaction event will not be cancelled
 
 
-    private ActionResult() {
+    ActionResult() {
     }
 
     public boolean isAccepted() {
