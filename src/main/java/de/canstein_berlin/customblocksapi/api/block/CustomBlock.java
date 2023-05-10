@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 
 public class CustomBlock {
@@ -91,6 +92,7 @@ public class CustomBlock {
      */
     public void create(ItemPlacementContext ctx) {
         final Location loc = ctx.getPlacementPosition().toBlockLocation();
+        CustomBlockState state = getPlacementState(ctx);
 
         //Spawn Display Entity
         ItemDisplay display = loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
@@ -101,7 +103,6 @@ public class CustomBlock {
             entity.setViewRange(10);
 
             //Save default State to entity
-            CustomBlockState state = getPlacementState(ctx);
             state.saveToEntity(entity);
             new CustomBlockState(this, entity);
 
@@ -128,6 +129,8 @@ public class CustomBlock {
 
         //Set Block
         loc.getBlock().setType(settings.getBaseBlock());
+
+        onPlaced(state, loc.getWorld(), loc, ctx.getPlayer(), ctx.getStack());
     }
 
     /**
@@ -164,8 +167,21 @@ public class CustomBlock {
     }
 
 
+    /**
+     * Method called if the player right-clicks the block. Will be called for both EquipmentSlot.HAND and EquipmentSlot.OFF_HAND
+     *
+     * @param state    The current state of the block clicked
+     * @param world    The world the block is in
+     * @param location The Location the block is at
+     * @param player   The player that clicked the block
+     * @param hand     The hand used in the click
+     * @return ActionResult.SUCCESS will cancel the underlying interaction event and disabled placing of blocks etc.
+     */
     public ActionResult onUse(CustomBlockState state, World world, Location location, Player player, EquipmentSlot hand) {
         return ActionResult.FAIL;
+    }
+
+    public void onPlaced(CustomBlockState state, World world, Location location, @Nullable Player placer, ItemStack stack) {
     }
 
     public NamespacedKey getKey() {

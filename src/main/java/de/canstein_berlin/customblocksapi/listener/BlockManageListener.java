@@ -78,11 +78,11 @@ public class BlockManageListener implements Listener {
         //Place Block
         placeBlockInWorld(key, context); // Item Placement Context creation
 
-        //Remove Item
+        //Infinite items if player is in creative or spectator
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) || event.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) // Infinite Items in GameMode
             return;
 
-        //Use Item
+        //Reduce Item stack
         ItemStack stack = event.getItem();
         stack.setAmount(stack.getAmount() - 1);
         if (stack.getAmount() <= 0) event.getPlayer().setItemInHand(new ItemStack(Material.AIR));

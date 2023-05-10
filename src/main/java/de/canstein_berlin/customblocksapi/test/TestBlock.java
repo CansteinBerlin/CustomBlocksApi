@@ -14,6 +14,8 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class TestBlock extends CustomBlock {
 
@@ -55,6 +57,12 @@ public class TestBlock extends CustomBlock {
     public ActionResult onUse(CustomBlockState state, World world, Location location, Player player, EquipmentSlot hand) {
         player.sendMessage("You clicked me using your " + hand);
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void onPlaced(CustomBlockState state, World world, Location location, @Nullable Player placer, ItemStack stack) {
+        if (placer == null) return;
+        placer.sendMessage("You placed me down. Thank you :)");
     }
 
     @Override
