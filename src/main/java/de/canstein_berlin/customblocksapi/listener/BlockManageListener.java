@@ -2,6 +2,7 @@ package de.canstein_berlin.customblocksapi.listener;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,8 +72,11 @@ public class BlockManageListener implements Listener {
             if (!(e instanceof Item)) return;
         }
 
+        //Create ItemPlacement Context
+        ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), placeLocation, event.getClickedBlock().isReplaceable(), event.getBlockFace());
+
         //Place Block
-        placeBlockInWorld(key, placeLocation);
+        placeBlockInWorld(key, context); // Item Placement Context creation
 
         //Remove Item
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE) || event.getPlayer().getGameMode().equals(GameMode.SPECTATOR)) // Infinite Items in GameMode
@@ -114,11 +118,9 @@ public class BlockManageListener implements Listener {
 
     }
 
-    private void placeBlockInWorld(NamespacedKey key, Location loc) {
+    private void placeBlockInWorld(NamespacedKey key, ItemPlacementContext ctx) {
         CustomBlock customBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
-        customBlock.create(loc);
-
-        System.out.println(customBlock.getProperties());
+        customBlock.create(ctx);
     }
 
     private NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer persistentDataContainer) {

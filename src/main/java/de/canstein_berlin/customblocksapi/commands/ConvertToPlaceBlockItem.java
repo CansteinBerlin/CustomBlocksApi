@@ -11,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
 public class ConvertToPlaceBlockItem implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        System.out.println("Test");
         if (commandSender instanceof Player) {
             Player player = ((Player) commandSender).getPlayer();
             ItemStack stack = player.getItemInHand();
-            System.out.println(stack);
             if (!stack.getType().isAir()) {
                 CustomBlocksApiPlugin.TEST_BLOCK.toPlaceItemStack(stack);
             }

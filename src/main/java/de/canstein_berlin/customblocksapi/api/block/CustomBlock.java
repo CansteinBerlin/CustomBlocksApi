@@ -5,16 +5,15 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
-import de.canstein_berlin.customblocksapi.test.TestBlock;
 import org.bukkit.Axis;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
@@ -22,9 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class CustomBlock {
 
@@ -51,7 +48,6 @@ public class CustomBlock {
 
         //Define default state can be changed later
         defaultState = new CustomBlockState(this, properties);
-        defaultState = setDefaultState(defaultState);
 
         //Custom Model Data Lookup Table
         customModelDataLookupTable = createCMDLookupTable(new CMDLookupTableBuilder(this));
@@ -66,8 +62,8 @@ public class CustomBlock {
     public void appendProperties(PropertyListBuilder propertyListBuilder) {
     }
 
-    public CustomBlockState setDefaultState(CustomBlockState defaultState) {
-        return defaultState;
+    public void setDefaultState(CustomBlockState defaultState) {
+        this.defaultState = defaultState;
     }
 
     public CMDLookupTable createCMDLookupTable(CMDLookupTableBuilder tableBuilder) {
@@ -81,7 +77,6 @@ public class CustomBlock {
      * @return Converted ItemStack
      */
     public ItemStack toPlaceItemStack(ItemStack stack) {
-        System.out.println("Converted");
         ItemMeta meta = stack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
@@ -94,8 +89,8 @@ public class CustomBlock {
      *
      * @param location Location where to create the block.
      */
-    public void create(Location location) {
-        final Location loc = location.toBlockLocation();
+    public void create(ItemPlacementContext ctx) {
+        final Location loc = ctx.getPlacementPosition().toBlockLocation();
 
         //Spawn Display Entity
         ItemDisplay display = loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
@@ -106,13 +101,11 @@ public class CustomBlock {
             entity.setViewRange(2);
 
             //Save default State to entity
-            Random random = new Random();
-            defaultState.with(TestBlock.FACING, List.of(BlockFace.SOUTH, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST).get(random.nextInt(4)));
-            defaultState.with(TestBlock.ENABLED, random.nextBoolean());
-            defaultState.saveToEntity(entity);
+            CustomBlockState state = getPlacementState(ctx);
+            state.saveToEntity(entity);
             new CustomBlockState(this, entity);
 
-            CMDLookupTableElement element = customModelDataLookupTable.match(defaultState);
+            CMDLookupTableElement element = customModelDataLookupTable.match(state);
 
             //Set Display Item
             ItemStack stack = new ItemStack(settings.getDisplayMaterial());
@@ -124,8 +117,6 @@ public class CustomBlock {
 
             //Rotate Item According to the element
             if (element == null || element.getRotations().isEmpty()) return;
-            System.out.println(element.getRotations());
-            final int[] iterator = {0};
             int xRotation = 0;
             int yRotation = 0;
             for (Map.Entry<Axis, Integer> entry : element.getRotations().entrySet()) {
@@ -150,6 +141,16 @@ public class CustomBlock {
         loc.getBlock().setType(Material.AIR);
     }
 
+    /**
+     * This method should be overridden if you want to change the blockstates in regard to the player placing the block
+     *
+     * @param ctx ItemPlacementContext that holds information about how the block was placed
+     * @return Blockstate that is placed in the world
+     */
+    public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
+        return defaultState;
+    }
+
     public NamespacedKey getKey() {
         return key;
     }
@@ -164,5 +165,9 @@ public class CustomBlock {
 
     public ImmutableMap<String, Property<?>> getProperties() {
         return properties;
+    }
+
+    public CustomBlockState getDefaultState() {
+        return defaultState;
     }
 }

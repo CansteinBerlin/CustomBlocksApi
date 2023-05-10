@@ -58,7 +58,6 @@ public class CustomBlockState {
                 throw new IllegalArgumentException("Unknown property " + name + " on block " + parentBlock.getKey());
             Property.Value<?> propertyValue = property.parse(value);
             propertyValues.put(property, propertyValue);
-            System.out.println(propertyValue); //TODO: REMOVE
         }
 
     }

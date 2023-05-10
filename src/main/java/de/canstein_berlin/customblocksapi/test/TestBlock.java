@@ -3,6 +3,7 @@ package de.canstein_berlin.customblocksapi.test;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.*;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
+import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
@@ -24,6 +25,7 @@ public class TestBlock extends CustomBlock {
 
     public TestBlock(BlockSettings settings) {
         super(settings, 1);
+        setDefaultState(getDefaultState().with(ENABLED, false).with(AGE0_5, 4).with(FACING, BlockFace.SOUTH));
     }
 
 
@@ -33,8 +35,9 @@ public class TestBlock extends CustomBlock {
     }
 
     @Override
-    public CustomBlockState setDefaultState(CustomBlockState defaultState) {
-        return defaultState.with(ENABLED, false).with(AGE0_5, 4).with(FACING, BlockFace.SOUTH);
+    public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
+
+        return getDefaultState().with(FACING, ctx.getPlayerHorizontalLookDirection().getOppositeFace()).with(ENABLED, ctx.getPlacementPosition().getBlock().isBlockPowered());
     }
 
     @Override
