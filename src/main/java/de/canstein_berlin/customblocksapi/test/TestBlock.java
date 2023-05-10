@@ -8,6 +8,8 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Axis;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 
 public class TestBlock extends CustomBlock {
@@ -36,8 +38,14 @@ public class TestBlock extends CustomBlock {
 
     @Override
     public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
+        return getDefaultState().with(FACING, ctx.getPlayerHorizontalLookDirection().getOppositeFace()).with(ENABLED, ctx.getPlacementPosition().getBlock().getBlockPower() > 0);
+    }
 
-        return getDefaultState().with(FACING, ctx.getPlayerHorizontalLookDirection().getOppositeFace()).with(ENABLED, ctx.getPlacementPosition().getBlock().isBlockPowered());
+    @Override
+    public void onNeighborUpdate(CustomBlockState state, World world, Location location, CustomBlock block, Location fromPos) {
+        state.with(ENABLED, location.getBlock().getBlockPower() > 0);
+        state.update();
+        //System.out.println(state + "\n" + world + "\n" + location + "\n" + block + "\n" + fromPos);
     }
 
     @Override

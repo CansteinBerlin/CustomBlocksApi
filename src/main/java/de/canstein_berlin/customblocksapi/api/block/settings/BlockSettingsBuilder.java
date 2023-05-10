@@ -59,6 +59,11 @@ public class BlockSettingsBuilder {
         return this;
     }
 
+    public BlockSettingsBuilder withNeighborUpdate(boolean usesNeighborUpdateEvent) {
+        this.settings.setUsesNeighborUpdateEvent(usesNeighborUpdateEvent);
+        return this;
+    }
+
     /**
      * Combine all selected settings to the final BlockSettings
      *

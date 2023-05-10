@@ -25,6 +25,7 @@ public class CustomBlockState {
     @Nullable
     private ItemDisplay display;
     private final HashMap<Property<?>, Property.Value<?>> propertyValues;
+    private boolean updated;
 
     public CustomBlockState(CustomBlock parentBlock, ImmutableMap<String, Property<?>> properties) {
         this.parentBlock = parentBlock;
@@ -34,10 +35,12 @@ public class CustomBlockState {
             Property<?> property = element.getValue();
             propertyValues.put(property, property.createDefaultValue());
         }
+        updated = true;
     }
 
     public CustomBlockState(CustomBlock parentBlock, ItemDisplay display) {
         this.parentBlock = parentBlock;
+        this.display = display;
 
         propertyValues = new HashMap<>();
         PersistentDataContainer dataContainer = display.getPersistentDataContainer();
@@ -60,6 +63,7 @@ public class CustomBlockState {
             propertyValues.put(property, propertyValue);
         }
 
+        updated = false;
     }
 
     private CustomBlockState(CustomBlock customBlock, HashMap<Property<?>, Property.Value<?>> properties) {
@@ -80,6 +84,7 @@ public class CustomBlockState {
         }
         if (property.getValues().contains(value)) {
             propertyValues.put(property, property.createValue(value));
+            updated = true;
         } else {
             throw new IllegalArgumentException("Cannot set property " + property.getName() + " as " + value + " is not a valid value");
         }
@@ -116,5 +121,15 @@ public class CustomBlockState {
 
     public CustomBlock getParentBlock() {
         return parentBlock;
+    }
+
+    public void update() {
+        if (!updated) return;
+        if (display != null) {
+            System.out.println("updated");
+            saveToEntity(display);
+            parentBlock.redraw(this, display);
+        }
+        updated = false;
     }
 }

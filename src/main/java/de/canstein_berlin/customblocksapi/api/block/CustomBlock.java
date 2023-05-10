@@ -10,10 +10,7 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
-import org.bukkit.Axis;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
@@ -98,7 +95,7 @@ public class CustomBlock {
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
             entity.setBrightness(new Display.Brightness(15, 15));
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.HEAD);
-            entity.setViewRange(2);
+            entity.setViewRange(10);
 
             //Save default State to entity
             CustomBlockState state = getPlacementState(ctx);
@@ -151,6 +148,10 @@ public class CustomBlock {
         return defaultState;
     }
 
+    public void onNeighborUpdate(CustomBlockState state, World world, Location location, CustomBlock block, Location fromPos) {
+
+    }
+
     public NamespacedKey getKey() {
         return key;
     }
@@ -169,5 +170,17 @@ public class CustomBlock {
 
     public CustomBlockState getDefaultState() {
         return defaultState;
+    }
+
+    public void redraw(CustomBlockState state, ItemDisplay display) {
+        CMDLookupTableElement element = customModelDataLookupTable.match(state);
+
+        //Set Display Item
+        ItemStack stack = new ItemStack(settings.getDisplayMaterial());
+        ItemMeta meta = stack.getItemMeta();
+        if (element == null) meta.setCustomModelData(customModelDataDefault);
+        else meta.setCustomModelData(element.getCustomModelData());
+        stack.setItemMeta(meta);
+        display.setItemStack(stack);
     }
 }

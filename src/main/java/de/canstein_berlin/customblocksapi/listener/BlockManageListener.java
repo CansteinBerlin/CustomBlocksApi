@@ -123,7 +123,7 @@ public class BlockManageListener implements Listener {
         customBlock.create(ctx);
     }
 
-    private NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer persistentDataContainer) {
+    protected static NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer persistentDataContainer) {
         if (!persistentDataContainer.has(CustomBlock.CUSTOM_BLOCK_KEY)) return null;
         String stringifiedNameSpacedKey = persistentDataContainer.get(CustomBlock.CUSTOM_BLOCK_KEY, PersistentDataType.STRING);
         if (stringifiedNameSpacedKey == null) return null;
