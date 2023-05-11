@@ -48,6 +48,14 @@ public interface ICustomBlocksApi {
     CustomBlockState getStateFromWorld(Location location);
 
     /**
+     * Set a custom block in the world
+     *
+     * @param location    The location to place the block at
+     * @param customBlock The Custom Block to place
+     */
+    void setBlock(Location location, CustomBlock customBlock);
+
+    /**
      * Util method for usage inside the plugin.
      *
      * @return A List of registered base Block materials of all blocks that want to use the neighbor update event
@@ -74,7 +82,7 @@ public interface ICustomBlocksApi {
      * @return Whether there is a block that wants to use the entityMovement event
      */
     boolean usesEntityMovement();
-    
+
     static NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer container) {
         if (!container.has(CustomBlock.CUSTOM_BLOCK_KEY)) return null;
         String stringifiedNameSpacedKey = container.get(CustomBlock.CUSTOM_BLOCK_KEY, PersistentDataType.STRING);

@@ -130,6 +130,7 @@ public class CustomBlock {
         //Set Block
         loc.getBlock().setType(settings.getBaseBlock());
 
+        //Call event
         onPlaced(state, loc.getWorld(), loc, ctx.getPlayer(), ctx.getStack());
     }
 

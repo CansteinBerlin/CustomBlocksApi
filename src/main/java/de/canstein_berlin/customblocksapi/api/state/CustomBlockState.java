@@ -136,5 +136,6 @@ public class CustomBlockState {
     public void remove(Location location) {
         if (display == null) return;
         parentBlock.remove(display, location);
+
     }
 }

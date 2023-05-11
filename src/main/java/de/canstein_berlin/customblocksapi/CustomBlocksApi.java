@@ -2,11 +2,14 @@ package de.canstein_berlin.customblocksapi;
 
 import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ItemDisplay;
+import org.bukkit.inventory.EquipmentSlot;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -101,6 +104,18 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         }
         if (block == null) return null;
         return new CustomBlockState(block, display);
+    }
+
+    @Override
+    public void setBlock(Location location, CustomBlock customBlock) {
+        boolean replaces = !location.getBlock().getType().isAir();
+        CustomBlockState state = getStateFromWorld(location);
+        if (state != null) {
+            state.remove(location);
+            replaces = true;
+        }
+
+        customBlock.create(new ItemPlacementContext(null, EquipmentSlot.HAND, location, replaces, BlockFace.NORTH));
     }
 
     @Override

@@ -6,3 +6,5 @@ api-version: 1.19
 commands:
   convertToPlaceable:
     description: "Command to convert every Item to a placeable block"
+  testplacement:
+    description: "Test placement and performance"

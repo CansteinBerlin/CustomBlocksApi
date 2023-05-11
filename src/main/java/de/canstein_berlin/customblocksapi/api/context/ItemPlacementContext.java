@@ -1,6 +1,7 @@
 package de.canstein_berlin.customblocksapi.api.context;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class ItemPlacementContext {
     }
 
     public ItemPlacementContext(Player player, EquipmentSlot hand, Location location, boolean replacesExisting, BlockFace placedAgainst) {
-        this(location, player, hand, player.getWorld(), player.getInventory().getItem(hand), replacesExisting, placedAgainst);
+        this(location, player, hand, location.getWorld(), player != null ? player.getInventory().getItem(hand) : new ItemStack(Material.AIR), replacesExisting, placedAgainst);
     }
 
     @Nullable
