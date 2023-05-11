@@ -82,6 +82,17 @@ public class BlockSettingsBuilder {
     }
 
     /**
+     * Set the custom name of the block
+     *
+     * @param name
+     * @return
+     */
+    public BlockSettingsBuilder withCustomName(String name) {
+        this.settings.setName(name);
+        return this;
+    }
+
+    /**
      * Combine all selected settings to the final BlockSettings
      *
      * @return Combined BlockSettings

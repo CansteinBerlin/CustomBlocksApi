@@ -11,12 +11,14 @@ public class BlockSettings {
     private Material displayMaterial; // Material inside the displayEntity
     private boolean usesNeighborUpdateEvent; // As the BlocksPhysicsEvent is so heavy on the server this has to be set if the onNeighborUpdate event is to be used
     private boolean usesEntityMovementEvent; // As the EntityMovementEvent and PlayerMovementEvent are heavy on the server this has to be set if onSteppedOn is used
+    private String name;
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
         displayMaterial = Material.STICK;
         usesNeighborUpdateEvent = false;
         usesEntityMovementEvent = false;
+        name = "Custom Block#" + ((int) (Math.random() * 999));
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -53,5 +55,13 @@ public class BlockSettings {
 
     public void setUsesEntityMovementEvent(boolean usesEntityMovementEvent) {
         this.usesEntityMovementEvent = usesEntityMovementEvent;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

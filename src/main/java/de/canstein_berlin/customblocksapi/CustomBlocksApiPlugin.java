@@ -27,6 +27,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .withDisplayMaterial(Material.STICK)
                 .withNeighborUpdate(true)
                 .withEntityMovement(true)
+                .withCustomName("Test Block")
                 .build()
         );
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
