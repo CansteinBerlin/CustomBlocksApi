@@ -9,12 +9,14 @@ public class BlockSettings {
 
     private Material baseBlock; // Base Block that is placed.
     private Material displayMaterial; // Material inside the displayEntity
-    private boolean usesNeighborUpdateEvent; // As the BlocksPhysicsEvent is so heavy on the server this has to be set if the neighborUpdate event is to be used
+    private boolean usesNeighborUpdateEvent; // As the BlocksPhysicsEvent is so heavy on the server this has to be set if the onNeighborUpdate event is to be used
+    private boolean usesEntityMovementEvent; // As the EntityMovementEvent and PlayerMovementEvent are heavy on the server this has to be set if onSteppedOn is used
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
         displayMaterial = Material.STICK;
         usesNeighborUpdateEvent = false;
+        usesEntityMovementEvent = false;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -43,5 +45,13 @@ public class BlockSettings {
 
     public void setUsesNeighborUpdateEvent(boolean usesNeighborUpdateEvent) {
         this.usesNeighborUpdateEvent = usesNeighborUpdateEvent;
+    }
+
+    public boolean isUsesEntityMovementEvent() {
+        return usesEntityMovementEvent;
+    }
+
+    public void setUsesEntityMovementEvent(boolean usesEntityMovementEvent) {
+        this.usesEntityMovementEvent = usesEntityMovementEvent;
     }
 }

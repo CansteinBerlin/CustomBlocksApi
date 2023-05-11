@@ -17,13 +17,19 @@ public class CustomBlocksApi implements ICustomBlocksApi {
 
     private static CustomBlocksApi instance;
     private final HashMap<NamespacedKey, CustomBlock> registeredCustomBlocks;
+    private final HashSet<Material> neighborUpdateBlockMaterials;
+    private final HashSet<Material> entityMovementBlockMaterials;
     private final HashSet<Material> customBlockMaterials;
-    private boolean usesNeighborUpdate;
+    private boolean usesNeighborUpdate, usesEntityMovement;
 
     public CustomBlocksApi() {
         CustomBlocksApi.instance = this;
         registeredCustomBlocks = new HashMap<>();
+        neighborUpdateBlockMaterials = new HashSet<>();
         customBlockMaterials = new HashSet<>();
+        entityMovementBlockMaterials = new HashSet<>();
+        usesNeighborUpdate = false;
+        usesEntityMovement = false;
     }
 
     public static ICustomBlocksApi getInstance() {
@@ -35,9 +41,15 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         customBlock.setKey(key);
         if (override || !registeredCustomBlocks.containsKey(key)) {
             registeredCustomBlocks.put(key, customBlock);
+            customBlockMaterials.add(customBlock.getSettings().getBaseBlock());
             if (customBlock.getSettings().isUsesNeighborUpdateEvent()) {
                 usesNeighborUpdate = true;
-                customBlockMaterials.add(customBlock.getSettings().getBaseBlock());
+                neighborUpdateBlockMaterials.add(customBlock.getSettings().getBaseBlock());
+            }
+
+            if (customBlock.getSettings().isUsesEntityMovementEvent()) {
+                usesEntityMovement = true;
+                entityMovementBlockMaterials.add(customBlock.getSettings().getBaseBlock());
             }
             return true;
         }
@@ -50,8 +62,13 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     }
 
     @Override
-    public Set<Material> getCustomBlockMaterials() {
-        return customBlockMaterials;
+    public Set<Material> getNeighborUpdateBlockMaterials() {
+        return neighborUpdateBlockMaterials;
+    }
+
+    @Override
+    public Set<Material> getEntityMovementBlockMaterials() {
+        return entityMovementBlockMaterials;
     }
 
     @Override
@@ -60,7 +77,13 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     }
 
     @Override
+    public boolean usesEntityMovement() {
+        return usesEntityMovement;
+    }
+
+    @Override
     public CustomBlockState getStateFromWorld(Location location) {
+        if (!customBlockMaterials.contains(location.getBlock().getType())) return null;
         Collection<ItemDisplay> displays = location.toBlockLocation().add(0.5, 0.5, 0.5).getNearbyEntitiesByType(ItemDisplay.class, 0.1);
         if (displays.size() == 0) return null;
         CustomBlock block = null;

@@ -7,6 +7,9 @@ import org.bukkit.Axis;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Combination of customModelData and rotation instructions
+ */
 public class CMDLookupTableElement {
 
     private final ImmutableMap<Property<?>, Property.Value<?>> properties;

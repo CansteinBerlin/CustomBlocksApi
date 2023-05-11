@@ -9,9 +9,11 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Axis;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -63,6 +65,21 @@ public class TestBlock extends CustomBlock {
     public void onPlaced(CustomBlockState state, World world, Location location, @Nullable Player placer, ItemStack stack) {
         if (placer == null) return;
         placer.sendMessage("You placed me down. Thank you :)");
+    }
+
+    @Override
+    public void onBreak(CustomBlockState state, World world, Location location, Player player) {
+        player.sendMessage("NOoooo don't break me");
+    }
+
+    @Override
+    public void onDestroyedByExplosion(CustomBlockState state, World world, Location location) {
+        Bukkit.broadcastMessage("I got exploded at location " + location.toBlockLocation());
+    }
+
+    @Override
+    public void onSteppedOn(CustomBlockState state, World world, Location location, Entity entity) {
+        Bukkit.broadcastMessage("Don't step on me!!! " + entity.getType());
     }
 
     @Override

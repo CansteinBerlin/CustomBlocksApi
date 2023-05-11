@@ -127,7 +127,6 @@ public class CustomBlockState {
     public void update() {
         if (!updated) return;
         if (display != null) {
-            System.out.println("updated");
             saveToEntity(display);
             parentBlock.redraw(this, display);
         }

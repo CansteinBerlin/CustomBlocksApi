@@ -6,6 +6,11 @@ import com.google.common.collect.Maps;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * General Enum Property for saving custom Enums to the blockstates
+ *
+ * @param <T>
+ */
 public class EnumProperty<T extends Enum<T>> extends Property<T> {
 
     private ImmutableSet<T> values;

@@ -6,6 +6,9 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * In Property for saving integers to the block
+ */
 public class IntProperty extends Property<Integer> {
 
     private final ImmutableSet<Integer> values;

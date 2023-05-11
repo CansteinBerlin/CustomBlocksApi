@@ -9,13 +9,16 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -103,8 +106,30 @@ public class BlockManageListener implements Listener {
         if (state == null) return;
 
         //Remove Block
+        state.getParentBlock().onBreak(state, event.getBlock().getWorld(), event.getBlock().getLocation(), event.getPlayer());
         state.remove(event.getBlock().getLocation());
+    }
 
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(block.getLocation());
+            if (state == null) continue;
+
+            state.getParentBlock().onDestroyedByExplosion(state, event.getBlock().getWorld(), block.getLocation());
+            state.remove(block.getLocation());
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(block.getLocation());
+            if (state == null) continue;
+
+            state.getParentBlock().onDestroyedByExplosion(state, block.getWorld(), block.getLocation());
+            state.remove(block.getLocation());
+        }
     }
 
     private void placeBlockInWorld(NamespacedKey key, ItemPlacementContext ctx) {

@@ -6,6 +6,9 @@ import org.bukkit.Axis;
 
 import java.util.HashMap;
 
+/**
+ * Builder of the CMDLookupTable.
+ */
 public class CMDLookupTableBuilder {
 
     private final CustomBlock parentBlock;

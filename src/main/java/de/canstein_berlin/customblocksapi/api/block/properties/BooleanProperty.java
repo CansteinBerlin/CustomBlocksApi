@@ -4,6 +4,9 @@ import com.google.common.collect.ImmutableSet;
 
 import java.util.Collection;
 
+/**
+ * Boolean Property for saving custom boolean like blockstates
+ */
 public class BooleanProperty extends Property<Boolean> {
 
     private final ImmutableSet<Boolean> values = ImmutableSet.of(true, false);

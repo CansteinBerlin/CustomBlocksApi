@@ -59,8 +59,25 @@ public class BlockSettingsBuilder {
         return this;
     }
 
+    /**
+     * Whether the Neighbor update event is used. default: false
+     *
+     * @param usesNeighborUpdateEvent
+     * @return
+     */
     public BlockSettingsBuilder withNeighborUpdate(boolean usesNeighborUpdateEvent) {
         this.settings.setUsesNeighborUpdateEvent(usesNeighborUpdateEvent);
+        return this;
+    }
+
+    /**
+     * Whether the Stepped On Event is used. default: false
+     *
+     * @param usesEntityMovement
+     * @return
+     */
+    public BlockSettingsBuilder withEntityMovement(boolean usesEntityMovement) {
+        this.settings.setUsesEntityMovementEvent(usesEntityMovement);
         return this;
     }
 

@@ -12,13 +12,13 @@ import javax.annotation.Nullable;
 public class ItemPlacementContext {
 
     @Nullable
-    private final Player player;
-    private final Location placementPosition;
-    private final EquipmentSlot hand;
-    private final World world;
-    private final ItemStack stack;
-    private final boolean replacesExisting;
-    private final BlockFace placedAgainst;
+    private final Player player; // The player that placed the block, Can be null if the block has been placed by the plugin
+    private final Location placementPosition; // The Location the block is placed at
+    private final EquipmentSlot hand; // The Hand that has been used
+    private final World world; // The world the block is in
+    private final ItemStack stack; // The placement ItemStack
+    private final boolean replacesExisting; // Whether the block replaces an existing block like grass
+    private final BlockFace placedAgainst; // The BlockFace the block is placed against
 
     public ItemPlacementContext(Location placementPosition, @Nullable Player player, EquipmentSlot hand, World world, ItemStack stack, boolean replacesExisting, BlockFace placedAgainst) {
         this.placementPosition = placementPosition;

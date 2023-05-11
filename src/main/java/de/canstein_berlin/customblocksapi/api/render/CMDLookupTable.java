@@ -4,11 +4,14 @@ import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 
 import java.util.ArrayList;
 
+/**
+ * Custom Model Data Lookuptable. This maps multiple blockstates to specific rotations and Custom Model Datas
+ */
 public class CMDLookupTable {
 
     private final ArrayList<CMDLookupTableElement> elements;
 
-    public CMDLookupTable() {
+    protected CMDLookupTable() {
         elements = new ArrayList<>();
     }
 

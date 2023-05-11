@@ -13,6 +13,7 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.*;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -180,7 +181,50 @@ public class CustomBlock {
         return ActionResult.FAIL;
     }
 
+    /**
+     * Is called AFTER the block is placed in the world. This should not be used to set the initial Blockstates of the block. Use {@link CustomBlock#getPlacementState(ItemPlacementContext)} for this
+     *
+     * @param state    The current state of the block placed
+     * @param world    The world the block is in
+     * @param location The location the block is placed at
+     * @param placer   The player placing the block. Can be null for example if a plugin placed the block.
+     * @param stack    The stack (The block or item) that is used to place the block.
+     */
     public void onPlaced(CustomBlockState state, World world, Location location, @Nullable Player placer, ItemStack stack) {
+    }
+
+    /**
+     * Called when the Block is exploded
+     *
+     * @param state    State the block is current in
+     * @param world    World the block is in
+     * @param location Location the block is at
+     */
+    public void onDestroyedByExplosion(CustomBlockState state, World world, Location location) {
+    }
+
+    /**
+     * Fired when an entity steps on the block
+     *
+     * @param state    The state of the block
+     * @param world    The world the block is in
+     * @param location The location the block is at
+     * @param entity   The entity that stepped on the block
+     */
+    public void onSteppedOn(CustomBlockState state, World world, Location location, Entity entity) {
+
+    }
+
+    /**
+     * Called when a player breaks the block. Called BEFORE the block is removed
+     *
+     * @param state    The state of the block
+     * @param world    The world the block is in
+     * @param location The Location the block is at
+     * @param player   The player that broke the block
+     */
+    public void onBreak(CustomBlockState state, World world, Location location, Player player) {
+
     }
 
     public NamespacedKey getKey() {
