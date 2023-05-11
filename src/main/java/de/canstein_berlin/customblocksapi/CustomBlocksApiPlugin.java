@@ -28,6 +28,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .withNeighborUpdate(true)
                 .withEntityMovement(true)
                 .withCustomName("Test Block")
+                .withDropsWhenExploded(true)
                 .build()
         );
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);

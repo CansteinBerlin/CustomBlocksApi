@@ -107,7 +107,7 @@ public class BlockManageListener implements Listener {
 
         //Remove Block
         state.getParentBlock().onBreak(state, event.getBlock().getWorld(), event.getBlock().getLocation(), event.getPlayer());
-        state.remove(event.getBlock().getLocation());
+        state.remove(event.getBlock().getLocation(), true);
     }
 
     @EventHandler
@@ -117,7 +117,7 @@ public class BlockManageListener implements Listener {
             if (state == null) continue;
 
             state.getParentBlock().onDestroyedByExplosion(state, event.getBlock().getWorld(), block.getLocation());
-            state.remove(block.getLocation());
+            state.remove(block.getLocation(), state.getParentBlock().getSettings().isDropsWhenExploded());
         }
     }
 
@@ -128,7 +128,7 @@ public class BlockManageListener implements Listener {
             if (state == null) continue;
 
             state.getParentBlock().onDestroyedByExplosion(state, block.getWorld(), block.getLocation());
-            state.remove(block.getLocation());
+            state.remove(block.getLocation(), state.getParentBlock().getSettings().isDropsWhenExploded());
         }
     }
 

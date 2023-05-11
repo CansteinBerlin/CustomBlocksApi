@@ -93,6 +93,17 @@ public class BlockSettingsBuilder {
     }
 
     /**
+     * Set the custom name of the block
+     *
+     * @param name
+     * @return
+     */
+    public BlockSettingsBuilder withDropsWhenExploded(boolean dropsWhenExploded) {
+        this.settings.setDropsWhenExploded(dropsWhenExploded);
+        return this;
+    }
+
+    /**
      * Combine all selected settings to the final BlockSettings
      *
      * @return Combined BlockSettings

@@ -111,7 +111,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         boolean replaces = !location.getBlock().getType().isAir();
         CustomBlockState state = getStateFromWorld(location);
         if (state != null) {
-            state.remove(location);
+            state.remove(location, false);
             replaces = true;
         }
 

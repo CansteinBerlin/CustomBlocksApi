@@ -11,7 +11,8 @@ public class BlockSettings {
     private Material displayMaterial; // Material inside the displayEntity
     private boolean usesNeighborUpdateEvent; // As the BlocksPhysicsEvent is so heavy on the server this has to be set if the onNeighborUpdate event is to be used
     private boolean usesEntityMovementEvent; // As the EntityMovementEvent and PlayerMovementEvent are heavy on the server this has to be set if onSteppedOn is used
-    private String name;
+    private String name; // Name of the Block
+    private boolean dropsWhenExploded; // Whether the block drops its loot when exploded
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
@@ -19,6 +20,7 @@ public class BlockSettings {
         usesNeighborUpdateEvent = false;
         usesEntityMovementEvent = false;
         name = "Custom Block#" + ((int) (Math.random() * 999));
+        dropsWhenExploded = false;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -29,7 +31,7 @@ public class BlockSettings {
         return baseBlock;
     }
 
-    public void setBaseBlock(Material baseBlock) {
+    protected void setBaseBlock(Material baseBlock) {
         this.baseBlock = baseBlock;
     }
 
@@ -37,7 +39,7 @@ public class BlockSettings {
         return displayMaterial;
     }
 
-    public void setDisplayMaterial(Material displayMaterial) {
+    protected void setDisplayMaterial(Material displayMaterial) {
         this.displayMaterial = displayMaterial;
     }
 
@@ -45,7 +47,7 @@ public class BlockSettings {
         return usesNeighborUpdateEvent;
     }
 
-    public void setUsesNeighborUpdateEvent(boolean usesNeighborUpdateEvent) {
+    protected void setUsesNeighborUpdateEvent(boolean usesNeighborUpdateEvent) {
         this.usesNeighborUpdateEvent = usesNeighborUpdateEvent;
     }
 
@@ -53,7 +55,7 @@ public class BlockSettings {
         return usesEntityMovementEvent;
     }
 
-    public void setUsesEntityMovementEvent(boolean usesEntityMovementEvent) {
+    protected void setUsesEntityMovementEvent(boolean usesEntityMovementEvent) {
         this.usesEntityMovementEvent = usesEntityMovementEvent;
     }
 
@@ -61,7 +63,15 @@ public class BlockSettings {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isDropsWhenExploded() {
+        return dropsWhenExploded;
+    }
+
+    protected void setDropsWhenExploded(boolean dropsWhenExploded) {
+        this.dropsWhenExploded = dropsWhenExploded;
     }
 }

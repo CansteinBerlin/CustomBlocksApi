@@ -133,9 +133,9 @@ public class CustomBlockState {
         updated = false;
     }
 
-    public void remove(Location location) {
+    public void remove(Location location, boolean shouldDrop) {
         if (display == null) return;
-        parentBlock.remove(display, location);
+        parentBlock.remove(display, location, shouldDrop);
 
     }
 }

@@ -1,6 +1,9 @@
 package de.canstein_berlin.customblocksapi.test;
 
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.block.drops.IDrop;
+import de.canstein_berlin.customblocksapi.api.block.drops.ItemDrop;
+import de.canstein_berlin.customblocksapi.api.block.drops.LootTableDrop;
 import de.canstein_berlin.customblocksapi.api.block.properties.*;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import de.canstein_berlin.customblocksapi.api.context.ActionResult;
@@ -8,16 +11,16 @@ import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
-import org.bukkit.Axis;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.LootTables;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class TestBlock extends CustomBlock {
 
@@ -52,7 +55,6 @@ public class TestBlock extends CustomBlock {
     public void onNeighborUpdate(CustomBlockState state, World world, Location location, CustomBlock block, Location fromPos) {
         state.with(ENABLED, location.getBlock().getBlockPower() > 0);
         state.update();
-        //System.out.println(state + "\n" + world + "\n" + location + "\n" + block + "\n" + fromPos);
     }
 
     @Override
@@ -80,6 +82,14 @@ public class TestBlock extends CustomBlock {
     @Override
     public void onSteppedOn(CustomBlockState state, World world, Location location, Entity entity) {
         Bukkit.broadcastMessage("Don't step on me!!! " + entity.getType());
+    }
+
+    @Override
+    public List<IDrop> createDrops() {
+        return List.of(
+                ItemDrop.of(new ItemStack(Material.DIAMOND_BLOCK)),
+                LootTableDrop.of(this, LootTables.DESERT_PYRAMID.getLootTable())
+        );
     }
 
     @Override

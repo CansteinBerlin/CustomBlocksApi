@@ -2,6 +2,7 @@ package de.canstein_berlin.customblocksapi.api.block;
 
 import com.google.common.collect.ImmutableMap;
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.api.block.drops.IDrop;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
@@ -19,11 +20,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.loot.LootContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class CustomBlock {
 
@@ -31,17 +35,19 @@ public class CustomBlock {
     public static final NamespacedKey CUSTOM_BLOCK_KEY = new NamespacedKey(CustomBlocksApi.getInstance().getApiName(), "custom_block");
 
 
-    private NamespacedKey key; // Internal identifier of the block
-    private final BlockSettings settings; //Block's Settings that "control" the block
-    private final CMDLookupTable customModelDataLookupTable;
+    protected NamespacedKey key; // Internal identifier of the block
+    protected final BlockSettings settings; //Block's Settings that "control" the block
+    protected final CMDLookupTable customModelDataLookupTable;
     private final ImmutableMap<String, Property<?>> properties; // Properties of the generic block
-
-    private CustomBlockState defaultState;
-    private final int customModelDataDefault;
+    protected CustomBlockState defaultState; // Default State of the block
+    protected final int customModelDataDefault; //Default custom Model data if cmdLookupTable fails
+    protected final Random blockRandom; // Block Random that from which drops are generated. Should be used for functionality inside the block
+    private List<IDrop> drops;
 
     public CustomBlock(BlockSettings settings, int customModelDataDefault) {
         this.settings = settings;
         this.customModelDataDefault = customModelDataDefault;
+        this.blockRandom = new Random();
 
         //Add Properties
         final PropertyListBuilder listBuilder = new PropertyListBuilder(this);
@@ -53,6 +59,17 @@ public class CustomBlock {
 
         //Custom Model Data Lookup Table
         customModelDataLookupTable = createCMDLookupTable(new CMDLookupTableBuilder(this));
+        drops = createDrops();
+    }
+
+    /**
+     * Registration method that should be overridden if the block should drop anything
+     * If multiple drops are specified all drop objects will drop
+     *
+     * @return
+     */
+    public List<IDrop> createDrops() {
+        return List.of();
     }
 
     /**
@@ -140,9 +157,17 @@ public class CustomBlock {
      * @param validDisplay Underlying ItemDisplay
      * @param loc          Location of the block
      */
-    public void remove(ItemDisplay validDisplay, Location loc) {
+    public void remove(ItemDisplay validDisplay, Location loc, boolean shouldDrop) {
         validDisplay.remove();
         loc.getBlock().setType(Material.AIR);
+
+        if (!shouldDrop) return;
+        LootContext context = new LootContext.Builder(loc).build();
+        for (IDrop drop : drops) {
+            for (ItemStack stack : drop.getStacks(context)) {
+                loc.getWorld().dropItemNaturally(loc.toBlockLocation(), stack);
+            }
+        }
     }
 
     /**
@@ -258,5 +283,9 @@ public class CustomBlock {
         else meta.setCustomModelData(element.getCustomModelData());
         stack.setItemMeta(meta);
         display.setItemStack(stack);
+    }
+
+    public Random getBlockRandom() {
+        return blockRandom;
     }
 }
