@@ -5,6 +5,7 @@ import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -46,6 +47,14 @@ public interface ICustomBlocksApi {
      * @return CustomBlockState or null if block at location is not a custom block
      */
     CustomBlockState getStateFromWorld(Location location);
+
+    /**
+     * Get a CustomBlockState from an entity, or null if the entity is not a custom block
+     *
+     * @param e The Entity that may be a custom block
+     * @return CustomBlockState or null if the entity is not a custom block
+     */
+    CustomBlockState getStateFromWorld(Entity e);
 
     /**
      * Set a custom block in the world

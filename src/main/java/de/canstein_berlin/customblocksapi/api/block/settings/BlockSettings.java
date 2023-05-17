@@ -13,6 +13,7 @@ public class BlockSettings {
     private boolean usesEntityMovementEvent; // As the EntityMovementEvent and PlayerMovementEvent are heavy on the server this has to be set if onSteppedOn is used
     private String name; // Name of the Block
     private boolean dropsWhenExploded; // Whether the block drops its loot when exploded
+    private boolean noBaseBlock;
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
@@ -21,6 +22,7 @@ public class BlockSettings {
         usesEntityMovementEvent = false;
         name = "Custom Block#" + ((int) (Math.random() * 999));
         dropsWhenExploded = false;
+        noBaseBlock = false;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -73,5 +75,13 @@ public class BlockSettings {
 
     protected void setDropsWhenExploded(boolean dropsWhenExploded) {
         this.dropsWhenExploded = dropsWhenExploded;
+    }
+
+    public boolean isNoBaseBlock() {
+        return noBaseBlock;
+    }
+
+    public void setNoBaseBlock(boolean noBaseBlock) {
+        this.noBaseBlock = noBaseBlock;
     }
 }

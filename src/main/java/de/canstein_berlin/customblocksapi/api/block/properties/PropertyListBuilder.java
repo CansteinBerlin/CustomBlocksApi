@@ -26,7 +26,7 @@ public class PropertyListBuilder {
 
     private boolean validate(Property<?> property) {
         if (this.properties.containsKey(property.getName())) {
-            throw new IllegalArgumentException("Attempted to register duplicate property with name " + property.getName() + " on block " + customBlock.getSettings().getName());
+            throw new IllegalArgumentException("Attempted to register duplicate property with name " + property.getName() + " on block \"" + customBlock.getSettings().getName() + "\"");
         }
         return true;
     }

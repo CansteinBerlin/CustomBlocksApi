@@ -6,6 +6,7 @@ import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -25,6 +26,8 @@ public class CustomBlockState {
     private final CustomBlock parentBlock;
     @Nullable
     private ItemDisplay display;
+    @Nullable
+    private Interaction interaction;
     private final HashMap<Property<?>, Property.Value<?>> propertyValues;
     private boolean updated;
 
@@ -37,11 +40,14 @@ public class CustomBlockState {
             propertyValues.put(property, property.createDefaultValue());
         }
         updated = true;
+        interaction = null;
+        display = null;
     }
 
-    public CustomBlockState(CustomBlock parentBlock, ItemDisplay display) {
+    public CustomBlockState(CustomBlock parentBlock, ItemDisplay display, @Nullable Interaction interaction) {
         this.parentBlock = parentBlock;
         this.display = display;
+        this.interaction = interaction;
 
         propertyValues = new HashMap<>();
         PersistentDataContainer dataContainer = display.getPersistentDataContainer();
@@ -52,14 +58,14 @@ public class CustomBlockState {
         for (PersistentDataContainer container : elements) {
             String name = container.get(NAME_KEY, PersistentDataType.STRING);
             if (name == null)
-                throw new IllegalArgumentException("Malformed property data  on block " + parentBlock.getSettings().getName());
+                throw new IllegalArgumentException("Malformed property data  on block \"" + parentBlock.getSettings().getName() + "\"");
             String value = container.get(VALUE_KEY, PersistentDataType.STRING);
             if (value == null)
-                throw new IllegalArgumentException("Malformed property data  on block " + parentBlock.getSettings().getName());
+                throw new IllegalArgumentException("Malformed property data  on block \"" + parentBlock.getSettings().getName() + "\"");
 
             Property<?> property = parentBlock.getProperties().get(name);
             if (property == null)
-                throw new IllegalArgumentException("Unknown property " + name + " on block " + parentBlock.getSettings().getName());
+                throw new IllegalArgumentException("Unknown property " + name + " on block \"" + parentBlock.getSettings().getName() + "\"");
             Property.Value<?> propertyValue = property.parse(value);
             propertyValues.put(property, propertyValue);
         }
@@ -79,7 +85,7 @@ public class CustomBlockState {
     public <T extends Comparable<T>, V extends T> CustomBlockState with(Property<T> property, V value) {
         Property.Value<?> element = this.propertyValues.get(property);
         if (element == null)
-            throw new IllegalArgumentException("Cannot set property " + property.getName() + " as it does not exist in " + parentBlock.getSettings().getName());
+            throw new IllegalArgumentException("Cannot set property " + property.getName() + " as it does not exist in \"" + parentBlock.getSettings().getName() + "\"");
         if (element.value() == value) {
             return this;
         }
@@ -95,7 +101,7 @@ public class CustomBlockState {
     public <T extends Comparable<T>> T get(Property<T> property) {
         Property.Value<?> value = this.propertyValues.get(property);
         if (value == null) {
-            throw new IllegalArgumentException("Cannot get property " + property.getName() + " as it does not exist in " + this.parentBlock.getSettings().getName());
+            throw new IllegalArgumentException("Cannot get property " + property.getName() + " as it does not exist in \"" + this.parentBlock.getSettings().getName() + "\"");
         }
         return property.getType().cast(value.value());
     }
@@ -135,7 +141,7 @@ public class CustomBlockState {
 
     public void remove(Location location, boolean shouldDrop) {
         if (display == null) return;
-        parentBlock.remove(display, location, shouldDrop);
+        parentBlock.remove(display, interaction, location, shouldDrop);
 
     }
 }

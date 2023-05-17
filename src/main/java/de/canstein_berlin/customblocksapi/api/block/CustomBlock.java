@@ -2,6 +2,7 @@ package de.canstein_berlin.customblocksapi.api.block;
 
 import com.google.common.collect.ImmutableMap;
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.block.drops.IDrop;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
@@ -13,16 +14,14 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.*;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.loot.LootContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -42,7 +41,7 @@ public class CustomBlock {
     protected CustomBlockState defaultState; // Default State of the block
     protected final int customModelDataDefault; //Default custom Model data if cmdLookupTable fails
     protected final Random blockRandom; // Block Random that from which drops are generated. Should be used for functionality inside the block
-    private List<IDrop> drops;
+    private final List<IDrop> drops;
 
     public CustomBlock(BlockSettings settings, int customModelDataDefault) {
         this.settings = settings;
@@ -121,7 +120,6 @@ public class CustomBlock {
 
             //Save default State to entity
             state.saveToEntity(entity);
-            new CustomBlockState(this, entity);
 
             CMDLookupTableElement element = customModelDataLookupTable.match(state);
 
@@ -144,8 +142,18 @@ public class CustomBlock {
             entity.setRotation(xRotation, yRotation);
         });
 
-        //Set Block
-        loc.getBlock().setType(settings.getBaseBlock());
+        if (!settings.isNoBaseBlock()) {
+            //Set Block if base block present
+            loc.getBlock().setType(settings.getBaseBlock());
+        } else {
+            //Spawn Hitbox entity
+            loc.getWorld().spawn(loc.clone().add(0.5, 0, 0.5), Interaction.class, (entity) -> {
+                entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
+                entity.setInteractionWidth(1);
+                entity.setInteractionHeight(1);
+                entity.setInvulnerable(false);
+            });
+        }
 
         //Call event
         onPlaced(state, loc.getWorld(), loc, ctx.getPlayer(), ctx.getStack());
@@ -157,8 +165,17 @@ public class CustomBlock {
      * @param validDisplay Underlying ItemDisplay
      * @param loc          Location of the block
      */
-    public void remove(ItemDisplay validDisplay, Location loc, boolean shouldDrop) {
+    public void remove(ItemDisplay validDisplay, @Nullable Interaction interaction, Location loc, boolean shouldDrop) {
         validDisplay.remove();
+        if (interaction != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    interaction.remove();
+                }
+            }.runTaskLater(CustomBlocksApiPlugin.getInstance(), 2);
+
+        }
         loc.getBlock().setType(Material.AIR);
 
         if (!shouldDrop) return;
@@ -182,6 +199,7 @@ public class CustomBlock {
 
     /**
      * This method is called whenever this block is updated.
+     * Blocks are sometimes updated multiple times per tick. This is not a bug this is how minecraft works
      *
      * @param state    BlockState of the block at the location
      * @param world    World the block is in
@@ -238,7 +256,6 @@ public class CustomBlock {
      * @param entity   The entity that stepped on the block
      */
     public void onSteppedOn(CustomBlockState state, World world, Location location, Entity entity) {
-
     }
 
     /**
@@ -250,7 +267,6 @@ public class CustomBlock {
      * @param player   The player that broke the block
      */
     public void onBreak(CustomBlockState state, World world, Location location, Player player) {
-
     }
 
     public NamespacedKey getKey() {

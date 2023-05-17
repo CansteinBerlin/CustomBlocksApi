@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -83,6 +84,16 @@ public class BlockEventListener implements Listener {
             event.setCancelled(true);
             return;
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerUseNoBaseBlockBlock(PlayerInteractAtEntityEvent event) {
+        if (event.getPlayer().isSneaking()) return;
+
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getRightClicked());
+        if (state == null) return;
+        ActionResult result = state.getParentBlock().onUse(state, event.getRightClicked().getWorld(), event.getRightClicked().getLocation(), event.getPlayer(), event.getHand());
+        if (result.isAccepted()) event.setCancelled(true);
     }
 
 

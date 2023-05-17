@@ -39,13 +39,13 @@ public class CMDLookupTableBuilder {
      */
     public <T extends Comparable<T>> CMDLookupTableBuilder with(Property<T> property, T value) {
         if (parentBlock.getProperties().get(property.getName()) == null)
-            throw new IllegalArgumentException("Block " + parentBlock.getSettings().getName() + " does not contain property " + property.getName());
+            throw new IllegalArgumentException("Block \"" + parentBlock.getSettings().getName() + "\" does not contain property " + property.getName());
 
         if (!property.getValues().contains(value))
-            throw new IllegalArgumentException("The value " + value + " is not a valid value for the property " + property.getName() + " of block " + parentBlock.getSettings().getName());
+            throw new IllegalArgumentException("The value " + value + " is not a valid value for the property " + property.getName() + " of block \"" + parentBlock.getSettings().getName() + "\"");
 
         if (properties.containsKey(property))
-            throw new IllegalArgumentException("Duplicate property " + property + " on lookuptable of block " + parentBlock.getSettings().getName());
+            throw new IllegalArgumentException("Duplicate property " + property + " on lookuptable of block \"" + parentBlock.getSettings().getName() + "\"");
 
         properties.put(property, property.createValue(value));
         return this;
@@ -74,7 +74,7 @@ public class CMDLookupTableBuilder {
         if (rotations.containsKey(axis))
             throw new IllegalArgumentException("Duplicate rotation axis " + axis + " on lookuptable of block " + parentBlock.getSettings().getName());
         if (rotation < 0 || rotation > 360)
-            throw new IllegalArgumentException("Rotation out of bounds (0-360) for block " + parentBlock.getSettings().getName());
+            throw new IllegalArgumentException("Rotation out of bounds (0-360) for block \"" + parentBlock.getSettings().getName() + "\"");
         rotations.put(axis, rotation);
         return this;
     }

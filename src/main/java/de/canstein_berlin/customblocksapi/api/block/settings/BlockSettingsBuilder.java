@@ -43,7 +43,7 @@ public class BlockSettingsBuilder {
      * @param material Material to set default Material.AIR
      * @return
      */
-    public BlockSettingsBuilder withBaseBlock(Material material) {
+    public BlockSettingsBuilder baseBlock(Material material) {
         settings.setBaseBlock(material);
         return this;
     }
@@ -54,7 +54,7 @@ public class BlockSettingsBuilder {
      * @param material Material to set default Material.AIR
      * @return
      */
-    public BlockSettingsBuilder withDisplayMaterial(Material material) {
+    public BlockSettingsBuilder displayMaterial(Material material) {
         this.settings.setDisplayMaterial(material);
         return this;
     }
@@ -65,7 +65,7 @@ public class BlockSettingsBuilder {
      * @param usesNeighborUpdateEvent
      * @return
      */
-    public BlockSettingsBuilder withNeighborUpdate(boolean usesNeighborUpdateEvent) {
+    public BlockSettingsBuilder neighborUpdate(boolean usesNeighborUpdateEvent) {
         this.settings.setUsesNeighborUpdateEvent(usesNeighborUpdateEvent);
         return this;
     }
@@ -76,7 +76,7 @@ public class BlockSettingsBuilder {
      * @param usesEntityMovement
      * @return
      */
-    public BlockSettingsBuilder withEntityMovement(boolean usesEntityMovement) {
+    public BlockSettingsBuilder entityMovement(boolean usesEntityMovement) {
         this.settings.setUsesEntityMovementEvent(usesEntityMovement);
         return this;
     }
@@ -87,7 +87,7 @@ public class BlockSettingsBuilder {
      * @param name
      * @return
      */
-    public BlockSettingsBuilder withCustomName(String name) {
+    public BlockSettingsBuilder customName(String name) {
         this.settings.setName(name);
         return this;
     }
@@ -95,11 +95,22 @@ public class BlockSettingsBuilder {
     /**
      * Set the custom name of the block
      *
-     * @param name
+     * @param dropsWhenExploded
      * @return
      */
-    public BlockSettingsBuilder withDropsWhenExploded(boolean dropsWhenExploded) {
+    public BlockSettingsBuilder dropsWhenExploded(boolean dropsWhenExploded) {
         this.settings.setDropsWhenExploded(dropsWhenExploded);
+        return this;
+    }
+
+    /**
+     * Whether the block uses a base block or not
+     *
+     * @param noBaseBlock
+     * @return
+     */
+    public BlockSettingsBuilder noBaseBlock(boolean noBaseBlock) {
+        this.settings.setNoBaseBlock(noBaseBlock);
         return this;
     }
 
@@ -109,6 +120,10 @@ public class BlockSettingsBuilder {
      * @return Combined BlockSettings
      */
     public BlockSettings build() {
+        if (settings.isNoBaseBlock()) {
+            settings.setUsesEntityMovementEvent(false);
+            settings.setBaseBlock(Material.AIR);
+        }
         return settings;
     }
 
