@@ -3,9 +3,11 @@ package de.canstein_berlin.customblocksapi.test;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import de.canstein_berlin.customblocksapi.api.context.ActionResult;
+import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -39,6 +41,11 @@ public class TestBlockNoBaseBlock extends CustomBlock {
     public ActionResult onUse(CustomBlockState state, World world, Location location, Player player, EquipmentSlot hand) {
         player.sendMessage("Hmm i like it");
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
+        return ctx.getPlacementPosition().subtract(0, 1, 0).getBlock().getType().equals(Material.FARMLAND) ? getDefaultState() : null;
     }
 
     @Override

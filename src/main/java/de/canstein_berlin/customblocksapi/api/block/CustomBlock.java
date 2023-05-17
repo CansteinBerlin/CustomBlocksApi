@@ -106,9 +106,10 @@ public class CustomBlock {
      *
      * @param ctx Context that gives some information about the placement of the block
      */
-    public void create(ItemPlacementContext ctx) {
+    public boolean create(ItemPlacementContext ctx) {
         final Location loc = ctx.getPlacementPosition().toBlockLocation();
         CustomBlockState state = getPlacementState(ctx);
+        if (state == null) return false;
 
         //Spawn Display Entity
         loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
@@ -157,6 +158,7 @@ public class CustomBlock {
 
         //Call event
         onPlaced(state, loc.getWorld(), loc, ctx.getPlayer(), ctx.getStack());
+        return true;
     }
 
     /**
@@ -188,10 +190,10 @@ public class CustomBlock {
     }
 
     /**
-     * This method should be overridden if you want to change the blockstates in regard to the player placing the block
+     * This method should be overridden if you want to change the blockstates of the placed block, or stop the block from placing by returning null
      *
      * @param ctx ItemPlacementContext that holds information about how the block was placed
-     * @return Blockstate that is placed in the world
+     * @return Blockstate that is placed in the world or null if the block should not be placed
      */
     public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
         return defaultState;
@@ -226,7 +228,7 @@ public class CustomBlock {
     }
 
     /**
-     * Is called AFTER the block is placed in the world. This should not be used to set the initial Blockstates of the block. Use {@link CustomBlock#getPlacementState(ItemPlacementContext)} for this
+     * Is called AFTER the block is placed in the world. To prevent the block from placing or setting the initial BlockState of the block use {@link CustomBlock#getPlacementState(ItemPlacementContext)}
      *
      * @param state    The current state of the block placed
      * @param world    The world the block is in

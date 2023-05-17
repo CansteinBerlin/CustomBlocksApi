@@ -83,10 +83,10 @@ public class BlockManageListener implements Listener {
         ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), placeLocation, event.getClickedBlock().isReplaceable(), event.getBlockFace());
 
         //Place Block
-        placeBlockInWorld(key, context);
+        boolean isPlaced = placeBlockInWorld(key, context);
 
         //Reduce Items
-        reduceItemStack(event.getPlayer(), event.getHand());
+        if (isPlaced) reduceItemStack(event.getPlayer(), event.getHand());
     }
 
     @EventHandler
@@ -126,10 +126,10 @@ public class BlockManageListener implements Listener {
 
         //Create Item Context
         ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), blockPlace, false, placedAgainst);
-        placeBlockInWorld(key, context);
+        boolean isPlaced = placeBlockInWorld(key, context);
 
         //Reduce Items
-        reduceItemStack(event.getPlayer(), event.getHand());
+        if (isPlaced) reduceItemStack(event.getPlayer(), event.getHand());
     }
 
     /**
@@ -200,9 +200,9 @@ public class BlockManageListener implements Listener {
             player.getInventory().setItem(slot, new ItemStack(Material.AIR));
     }
 
-    private void placeBlockInWorld(NamespacedKey key, ItemPlacementContext ctx) {
+    private boolean placeBlockInWorld(NamespacedKey key, ItemPlacementContext ctx) {
         CustomBlock customBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
-        customBlock.create(ctx);
+        return customBlock.create(ctx);
     }
 
     //No Base block entities
