@@ -70,8 +70,9 @@ public class TestBlock extends CustomBlock {
     }
 
     @Override
-    public void onBreak(CustomBlockState state, World world, Location location, Player player) {
+    public boolean onBreak(CustomBlockState state, World world, Location location, Player player) {
         player.sendMessage("NOoooo don't break me");
+        return false;
     }
 
     @Override

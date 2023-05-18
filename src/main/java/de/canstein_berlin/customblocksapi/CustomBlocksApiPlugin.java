@@ -6,6 +6,7 @@ import de.canstein_berlin.customblocksapi.commands.TestPlacementCommand;
 import de.canstein_berlin.customblocksapi.listener.BlockEventListener;
 import de.canstein_berlin.customblocksapi.listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.test.TestBlock;
+import de.canstein_berlin.customblocksapi.test.TestBlockHigher;
 import de.canstein_berlin.customblocksapi.test.TestBlockNoBaseBlock;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
     public static TestBlock TEST_BLOCK;
     public static TestBlockNoBaseBlock TEST_BLOCK_NO_BASE_BLOCK;
     private static CustomBlocksApiPlugin instance;
+    public static TestBlockHigher TEST_BLOCK_HIGHER;
 
     @Override
     public void onEnable() {
@@ -41,8 +43,17 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .neighborUpdate(true)
                 .build());
 
+        TEST_BLOCK_HIGHER = new TestBlockHigher(BlockSettingsBuilder.empty()
+                .displayMaterial(Material.STICK)
+                .customName("Higher Block")
+                .noBaseBlock(true)
+                .size(1f, 1.5f)
+                .build()
+        );
+
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_no_base"), TEST_BLOCK_NO_BASE_BLOCK);
+        CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_higher"), TEST_BLOCK_HIGHER);
 
         //Test Commands
         getCommand("convertToPlaceable").setExecutor(new ConvertToPlaceBlockItem());

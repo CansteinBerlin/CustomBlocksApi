@@ -15,7 +15,7 @@ public class ConvertToPlaceBlockItem implements CommandExecutor {
             Player player = ((Player) commandSender).getPlayer();
             ItemStack stack = player.getItemInHand();
             if (!stack.getType().isAir()) {
-                CustomBlocksApiPlugin.TEST_BLOCK_NO_BASE_BLOCK.toPlaceItemStack(stack);
+                CustomBlocksApiPlugin.TEST_BLOCK_HIGHER.toPlaceItemStack(stack);
             }
         }
         return false;

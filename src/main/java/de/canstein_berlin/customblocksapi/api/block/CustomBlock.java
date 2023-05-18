@@ -112,7 +112,7 @@ public class CustomBlock {
         if (state == null) return false;
 
         //Spawn Display Entity
-        loc.getWorld().spawn(loc.clone().add(0.5, 0.5, 0.5), ItemDisplay.class, (entity) -> {
+        loc.getWorld().spawn(loc.clone().add(settings.getWidth() / 2, 0.5, settings.getWidth() / 2), ItemDisplay.class, (entity) -> {
             //Entity Setup
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
             entity.setBrightness(new Display.Brightness(15, 15));
@@ -148,10 +148,10 @@ public class CustomBlock {
             loc.getBlock().setType(settings.getBaseBlock());
         } else {
             //Spawn Hitbox entity
-            loc.getWorld().spawn(loc.clone().add(0.5, 0, 0.5), Interaction.class, (entity) -> {
+            loc.getWorld().spawn(loc.clone().add(settings.getWidth() / 2, 0, settings.getWidth() / 2), Interaction.class, (entity) -> {
                 entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
-                entity.setInteractionWidth(1);
-                entity.setInteractionHeight(1);
+                entity.setInteractionWidth(settings.getWidth());
+                entity.setInteractionHeight(settings.getHeight());
                 entity.setInvulnerable(false);
             });
         }
@@ -267,8 +267,10 @@ public class CustomBlock {
      * @param world    The world the block is in
      * @param location The Location the block is at
      * @param player   The player that broke the block
+     * @return Whether the breaking is aborted
      */
-    public void onBreak(CustomBlockState state, World world, Location location, Player player) {
+    public boolean onBreak(CustomBlockState state, World world, Location location, Player player) {
+        return false;
     }
 
     public NamespacedKey getKey() {

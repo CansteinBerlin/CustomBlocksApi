@@ -1,6 +1,7 @@
 package de.canstein_berlin.customblocksapi.listener;
 
 import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
@@ -11,16 +12,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -65,6 +65,9 @@ public class BlockManageListener implements Listener {
         NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getItem().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
 
+        CustomBlock customBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
+        if (customBlock == null) return;
+
         //Cancel Event
         event.setCancelled(true);
 
@@ -74,7 +77,13 @@ public class BlockManageListener implements Listener {
         else placeLocation = event.getClickedBlock().getLocation().add(event.getBlockFace().getDirection());
 
         if (!placeLocation.getBlock().isReplaceable()) return; // Only replace replaceable blocks like air or grass
-        Collection<Entity> collided = placeLocation.clone().add(0.5, 0.5, 0.5).getNearbyEntities(0.5, 0.5, 0.5); // Get entities colliding with the "new Block"
+        Collection<Entity> collided = placeLocation.clone().add(
+                customBlock.getSettings().getWidth() / 2,
+                customBlock.getSettings().getHeight() / 2,
+                customBlock.getSettings().getWidth() / 2).getNearbyEntities(
+                customBlock.getSettings().getWidth() / 2,
+                customBlock.getSettings().getHeight() / 2,
+                customBlock.getSettings().getWidth() / 2); // Get entities colliding with the "new Block"
         for (Entity e : collided) { // Ignore Items
             if (!(e instanceof Item)) return;
         }
@@ -97,39 +106,88 @@ public class BlockManageListener implements Listener {
             return; // Check if item not air
         if (!(event.getRightClicked() instanceof Interaction)) return; // Only Interactions
 
+        NamespacedKey itemKey = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getPlayer().getInventory().getItem(event.getHand()).getItemMeta().getPersistentDataContainer());
+        if (itemKey == null) return;
+
         NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getRightClicked().getPersistentDataContainer());
         if (key == null) return; // Clicked Entity is not a custom Block
 
-        Vector direction = event.getClickedPosition().subtract(new Vector(0, 0.5, 0)); // Vector now goes from the center of the block instead of the underside
+        CustomBlock placedBlock = CustomBlocksApi.getInstance().getCustomBlock(key);
+        if (placedBlock == null) return;
+
+        CustomBlock toPlaceBlock = CustomBlocksApi.getInstance().getCustomBlock(itemKey);
+        if (toPlaceBlock == null) return;
+
+        // Vector now goes from the center of the interaction entity instead of the underside
+        Vector direction = event.getClickedPosition().subtract(new Vector(0, placedBlock.getSettings().getHeight() / 2f, 0));
+        Vector directionCopy = direction.clone();
+
         //Reduce to a Vector pointing in the direction of the place Block location
-        direction.setY(Math.abs(direction.getX()) == 0.5 || Math.abs(direction.getZ()) == 0.5 ? 0 : direction.getY());
-        direction.setX(Math.abs(direction.getY()) == 0.5 || Math.abs(direction.getZ()) == 0.5 ? 0 : direction.getX());
-        direction.setZ(Math.abs(direction.getX()) == 0.5 || Math.abs(direction.getY()) == 0.5 ? 0 : direction.getZ());
+        direction.setY(Math.abs(directionCopy.getX()) == placedBlock.getSettings().getWidth() / 2 || Math.abs(directionCopy.getZ()) == placedBlock.getSettings().getWidth() / 2 ? 0 : directionCopy.getY());
+        direction.setX(Math.abs(directionCopy.getY()) == placedBlock.getSettings().getHeight() / 2 || Math.abs(directionCopy.getZ()) == placedBlock.getSettings().getWidth() / 2 ? 0 : directionCopy.getX());
+        direction.setZ(Math.abs(directionCopy.getX()) == placedBlock.getSettings().getWidth() / 2 || Math.abs(directionCopy.getY()) == placedBlock.getSettings().getHeight() / 2 ? 0 : directionCopy.getZ());
 
-        //Location the block is placed at
-        Location blockPlace = event.getRightClicked().getLocation().toBlockLocation().add(0.5, 0.5, 0.5).add(direction.clone().multiply(1.01)).toBlockLocation();
+        direction = direction.normalize();
+        System.out.println(direction);
 
-        if (!blockPlace.getBlock().isReplaceable()) return; // Only replace replaceable blocks like air or grass
-        Collection<Entity> collided = blockPlace.clone().add(0.5, 0.5, 0.5).getNearbyEntities(0.5, 0.5, 0.5); // Get entities colliding with the "new Block"
+        //Calculate place Position
+        Location clickedPosition = event.getRightClicked().getLocation().add(event.getClickedPosition());
+        Location placeLocation = clickedPosition.clone().add(
+                new Vector(
+                        clamp(direction.getX() * toPlaceBlock.getSettings().getWidth(), -toPlaceBlock.getSettings().getWidth(), Math.ceil(placedBlock.getSettings().getWidth()) - placedBlock.getSettings().getWidth()),
+                        clamp(direction.getY() * toPlaceBlock.getSettings().getHeight(), -toPlaceBlock.getSettings().getHeight(), Math.ceil(placedBlock.getSettings().getHeight()) - placedBlock.getSettings().getHeight()),
+                        clamp(direction.getZ() * toPlaceBlock.getSettings().getWidth(), -toPlaceBlock.getSettings().getWidth(), Math.ceil(placedBlock.getSettings().getWidth()) - placedBlock.getSettings().getWidth()))
+        );
+        //placeLocation.setY(Math.ceil(placeLocation.getY()));
+        placeLocation = placeLocation.toBlockLocation();
+
+        // Only replace replaceable blocks like air or grass
+        if (!placeLocation.getBlock().isReplaceable()) return;
+        Collection<Entity> collided = placeLocation.clone().add(
+                toPlaceBlock.getSettings().getWidth() / 2,
+                toPlaceBlock.getSettings().getHeight() / 2,
+                toPlaceBlock.getSettings().getWidth() / 2).getNearbyEntities(
+                toPlaceBlock.getSettings().getWidth() / 2,
+                toPlaceBlock.getSettings().getHeight() / 2,
+                toPlaceBlock.getSettings().getWidth() / 2); // Get entities colliding with the "new Block"
         for (Entity e : collided) { // Ignore Items
             if (!(e instanceof Item)) return;
         }
 
         //Get BlockFace
         BlockFace placedAgainst;
-        if (direction.getX() == -0.5) placedAgainst = BlockFace.WEST;
-        else if (direction.getX() == 0.5) placedAgainst = BlockFace.EAST;
-        else if (direction.getY() == 0.5) placedAgainst = BlockFace.UP;
-        else if (direction.getY() == -0.5) placedAgainst = BlockFace.DOWN;
-        else if (direction.getZ() == 0.5) placedAgainst = BlockFace.SOUTH;
+        if (direction.getX() == -1) placedAgainst = BlockFace.WEST;
+        else if (direction.getX() == 1) placedAgainst = BlockFace.EAST;
+        else if (direction.getY() == 1) placedAgainst = BlockFace.UP;
+        else if (direction.getY() == -1) placedAgainst = BlockFace.DOWN;
+        else if (direction.getZ() == 1) placedAgainst = BlockFace.SOUTH;
         else placedAgainst = BlockFace.NORTH;
 
         //Create Item Context
-        ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), blockPlace, false, placedAgainst);
-        boolean isPlaced = placeBlockInWorld(key, context);
+        ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), placeLocation, false, placedAgainst);
+        boolean isPlaced = placeBlockInWorld(itemKey, context);
 
         //Reduce Items
         if (isPlaced) reduceItemStack(event.getPlayer(), event.getHand());
+    }
+
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    private void visualizeLocation(Location loc, Color color) {
+        final int[] counter = {0};
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, new Particle.DustOptions(color, 1));
+                counter[0]++;
+                if (counter[0] >= 40) {
+                    cancel();
+                }
+            }
+        }.runTaskTimer(CustomBlocksApiPlugin.getInstance(), 0, 1);
     }
 
     /**
@@ -143,8 +201,9 @@ public class BlockManageListener implements Listener {
         if (state == null) return;
 
         //Remove Block
-        state.getParentBlock().onBreak(state, event.getBlock().getWorld(), event.getBlock().getLocation(), event.getPlayer());
-        state.remove(event.getBlock().getLocation(), true);
+        boolean stillAlive = state.getParentBlock().onBreak(state, event.getBlock().getWorld(), event.getBlock().getLocation(), event.getPlayer());
+        if (!stillAlive) state.remove(event.getBlock().getLocation(), true);
+        else event.setCancelled(true);
     }
 
     @EventHandler
@@ -213,8 +272,30 @@ public class BlockManageListener implements Listener {
 
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getEntity().getLocation());
         if (state == null) return;
-        state.getParentBlock().onBreak(state, event.getEntity().getWorld(), event.getEntity().getLocation().toBlockLocation(), ((Player) event.getDamager()));
-        state.remove(event.getEntity().getLocation(), true);
+        boolean stillAlive = state.getParentBlock().onBreak(state, event.getEntity().getWorld(), event.getEntity().getLocation().toBlockLocation(), ((Player) event.getDamager()));
+        if (!stillAlive) state.remove(event.getEntity().getLocation(), true);
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onEntityBlockForm(EntityBlockFormEvent event) {
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
+        if (state == null) return;
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onEntityBlockForm(EntityChangeBlockEvent event) {
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
+        if (state == null) return;
+        event.setCancelled(true);
+        event.getEntity().getWorld().dropItem(event.getBlock().getLocation().add(0.5, 0.5, 0.5), new ItemStack(event.getTo()));
+    }
+
+    @EventHandler
+    public void onBlockForm(BlockFormEvent event) {
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
+        if (state == null) return;
         event.setCancelled(true);
     }
 

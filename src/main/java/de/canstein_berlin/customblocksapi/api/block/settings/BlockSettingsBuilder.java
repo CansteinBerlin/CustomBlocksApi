@@ -115,6 +115,18 @@ public class BlockSettingsBuilder {
     }
 
     /**
+     * Set the size in blocks of the custom block
+     *
+     * @param width
+     * @param height
+     * @return
+     */
+    public BlockSettingsBuilder size(float width, float height) {
+        this.settings.setSize(width, height);
+        return this;
+    }
+
+    /**
      * Combine all selected settings to the final BlockSettings
      *
      * @return Combined BlockSettings
@@ -123,6 +135,8 @@ public class BlockSettingsBuilder {
         if (settings.isNoBaseBlock()) {
             settings.setUsesEntityMovementEvent(false);
             settings.setBaseBlock(Material.AIR);
+        } else {
+            size(1f, 1f);
         }
         return settings;
     }

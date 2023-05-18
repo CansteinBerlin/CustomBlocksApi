@@ -7,7 +7,6 @@ import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -28,8 +27,9 @@ public class TestBlockNoBaseBlock extends CustomBlock {
     }
 
     @Override
-    public void onBreak(CustomBlockState state, World world, Location location, Player player) {
+    public boolean onBreak(CustomBlockState state, World world, Location location, Player player) {
         player.sendMessage("You broke me :(");
+        return !player.isSneaking();
     }
 
     @Override
@@ -45,7 +45,8 @@ public class TestBlockNoBaseBlock extends CustomBlock {
 
     @Override
     public CustomBlockState getPlacementState(ItemPlacementContext ctx) {
-        return ctx.getPlacementPosition().subtract(0, 1, 0).getBlock().getType().equals(Material.FARMLAND) ? getDefaultState() : null;
+        return getDefaultState();
+        //return ctx.getPlacementPosition().subtract(0, 1, 0).getBlock().getType().equals(Material.FARMLAND) ? getDefaultState() : null;
     }
 
     @Override

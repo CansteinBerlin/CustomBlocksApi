@@ -13,7 +13,9 @@ public class BlockSettings {
     private boolean usesEntityMovementEvent; // As the EntityMovementEvent and PlayerMovementEvent are heavy on the server this has to be set if onSteppedOn is used
     private String name; // Name of the Block
     private boolean dropsWhenExploded; // Whether the block drops its loot when exploded
-    private boolean noBaseBlock;
+    private boolean noBaseBlock; // Whether the block has no base block
+    private float width; // Width of the default block defaults to 1
+    private float height; // Height of the default block defaults to 1
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
@@ -23,6 +25,8 @@ public class BlockSettings {
         name = "Custom Block#" + ((int) (Math.random() * 999));
         dropsWhenExploded = false;
         noBaseBlock = false;
+        width = 1;
+        height = 1;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -83,5 +87,20 @@ public class BlockSettings {
 
     public void setNoBaseBlock(boolean noBaseBlock) {
         this.noBaseBlock = noBaseBlock;
+    }
+
+    public void setSize(float width, float height) {
+        if (width <= 0 || height <= 0)
+            throw new IllegalArgumentException("Attempted to create a block with negative with or height");
+        this.width = width;
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 }
