@@ -88,9 +88,14 @@ public class BlockManageListener implements Listener {
             if (!(e instanceof Item)) return;
         }
 
+        //Area Empty?
+        if (!checkArea(placeLocation, customBlock.getSettings().getWidth(), customBlock.getSettings().getHeight())) // Area free of blocks
+            return;
+
+        clearArea(placeLocation, customBlock.getSettings().getWidth(), customBlock.getSettings().getHeight()); // Clear Area
+
         //Create ItemPlacement Context
         ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), placeLocation, event.getClickedBlock().isReplaceable(), event.getBlockFace());
-
         //Place Block
         boolean isPlaced = placeBlockInWorld(key, context);
 
@@ -168,6 +173,10 @@ public class BlockManageListener implements Listener {
 
         //Create Item Context
         ItemPlacementContext context = new ItemPlacementContext(event.getPlayer(), event.getHand(), placeLocation, false, placedAgainst);
+        if (!checkArea(placeLocation, toPlaceBlock.getSettings().getWidth(), toPlaceBlock.getSettings().getHeight())) // no Blocks in the way
+            return;
+
+        clearArea(placeLocation, toPlaceBlock.getSettings().getWidth(), toPlaceBlock.getSettings().getHeight()); // Blocks to air
         boolean isPlaced = placeBlockInWorld(itemKey, context);
 
         //Reduce Items
@@ -307,6 +316,27 @@ public class BlockManageListener implements Listener {
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
         if (state == null) return;
         event.setCancelled(true);
+    }
+
+    private boolean checkArea(Location start, float width, float height) {
+        for (int x = 0; x < Math.ceil(width); x++) {
+            for (int y = 0; y < Math.ceil(height); y++) {
+                for (int z = 0; z < Math.ceil(width); z++) {
+                    if (!start.clone().add(x, y, z).getBlock().isReplaceable()) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void clearArea(Location start, float width, float height) {
+        for (int x = 0; x < Math.ceil(width); x++) {
+            for (int y = 0; y < Math.ceil(height); y++) {
+                for (int z = 0; z < Math.ceil(width); z++) {
+                    start.clone().add(x, y, z).getBlock().setType(Material.AIR);
+                }
+            }
+        }
     }
 
 

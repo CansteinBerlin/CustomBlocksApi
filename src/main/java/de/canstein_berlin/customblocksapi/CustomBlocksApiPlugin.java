@@ -51,7 +51,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .displayMaterial(Material.STICK)
                 .customName("Higher Block")
                 .noBaseBlock(true)
-                .size(1f, 1.5f)
+                .size(5f, 5f)
                 .widthSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.BLOCK_SWEET_BERRY_BUSH_BREAK)
                 .build()
         );

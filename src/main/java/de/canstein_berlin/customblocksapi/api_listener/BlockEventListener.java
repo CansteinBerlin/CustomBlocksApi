@@ -96,5 +96,4 @@ public class BlockEventListener implements Listener {
         if (result.isAccepted()) event.setCancelled(true);
     }
 
-
 }
