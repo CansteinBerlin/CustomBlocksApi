@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -34,6 +35,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .entityMovement(true)
                 .customName("Test Block")
                 .dropsWhenExploded(true)
+                .widthSound(Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK)
                 .build()
         );
 
@@ -42,6 +44,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .customName("No base block")
                 .noBaseBlock(true)
                 .neighborUpdate(true)
+                .widthSound(Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK)
                 .build());
 
         TEST_BLOCK_HIGHER = new TestBlockHigher(BlockSettingsBuilder.empty()
@@ -49,6 +52,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .customName("Higher Block")
                 .noBaseBlock(true)
                 .size(1f, 1.5f)
+                .widthSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.BLOCK_SWEET_BERRY_BUSH_BREAK)
                 .build()
         );
 

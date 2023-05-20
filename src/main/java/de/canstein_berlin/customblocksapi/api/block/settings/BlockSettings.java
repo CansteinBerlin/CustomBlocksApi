@@ -1,6 +1,7 @@
 package de.canstein_berlin.customblocksapi.api.block.settings;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 
 /**
  * Settings class that holds the settings for a specific block. Should only be created using the Builder
@@ -16,6 +17,9 @@ public class BlockSettings {
     private boolean noBaseBlock; // Whether the block has no base block
     private float width; // Width of the default block defaults to 1
     private float height; // Height of the default block defaults to 1
+    private Sound placeSound;
+    private Sound breakSound;
+
 
     protected BlockSettings() { // Empty Block Settings
         baseBlock = Material.AIR;
@@ -27,6 +31,8 @@ public class BlockSettings {
         noBaseBlock = false;
         width = 1;
         height = 1;
+        placeSound = Sound.BLOCK_STONE_PLACE;
+        breakSound = Sound.BLOCK_STONE_BREAK;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -102,5 +108,21 @@ public class BlockSettings {
 
     public float getHeight() {
         return height;
+    }
+
+    public Sound getPlaceSound() {
+        return placeSound;
+    }
+
+    public void setPlaceSound(Sound placeSound) {
+        this.placeSound = placeSound;
+    }
+
+    public Sound getBreakSound() {
+        return breakSound;
+    }
+
+    public void setBreakSound(Sound breakSound) {
+        this.breakSound = breakSound;
     }
 }

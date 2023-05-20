@@ -95,7 +95,11 @@ public class BlockManageListener implements Listener {
         boolean isPlaced = placeBlockInWorld(key, context);
 
         //Reduce Items
-        if (isPlaced) reduceItemStack(event.getPlayer(), event.getHand());
+        if (isPlaced) {
+            reduceItemStack(event.getPlayer(), event.getHand());
+            if (event.getItem().getType().isItem())
+                event.getPlayer().getWorld().playSound(placeLocation, customBlock.getSettings().getPlaceSound(), 1, 1);
+        }
     }
 
     @EventHandler
@@ -128,7 +132,6 @@ public class BlockManageListener implements Listener {
         direction.setZ(Math.abs(directionCopy.getX()) == placedBlock.getSettings().getWidth() / 2 || Math.abs(directionCopy.getY()) == placedBlock.getSettings().getHeight() / 2 ? 0 : directionCopy.getZ());
 
         direction = direction.normalize();
-        System.out.println(direction);
 
         //Calculate place Position
         Location clickedPosition = event.getRightClicked().getLocation().add(event.getClickedPosition());
@@ -168,7 +171,11 @@ public class BlockManageListener implements Listener {
         boolean isPlaced = placeBlockInWorld(itemKey, context);
 
         //Reduce Items
-        if (isPlaced) reduceItemStack(event.getPlayer(), event.getHand());
+        if (isPlaced) {
+            reduceItemStack(event.getPlayer(), event.getHand());
+            if (event.getPlayer().getInventory().getItem(event.getHand()).getType().isItem())
+                event.getPlayer().getWorld().playSound(placeLocation, toPlaceBlock.getSettings().getPlaceSound(), 1, 1);
+        }
     }
 
     private double clamp(double value, double min, double max) {
@@ -273,7 +280,10 @@ public class BlockManageListener implements Listener {
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getEntity().getLocation());
         if (state == null) return;
         boolean stillAlive = state.getParentBlock().onBreak(state, event.getEntity().getWorld(), event.getEntity().getLocation().toBlockLocation(), ((Player) event.getDamager()));
-        if (!stillAlive) state.remove(event.getEntity().getLocation(), true);
+        if (!stillAlive) {
+            state.remove(event.getEntity().getLocation(), true);
+            event.getEntity().getWorld().playSound(event.getEntity().getLocation(), state.getParentBlock().getSettings().getBreakSound(), 1, 1);
+        }
         event.setCancelled(true);
     }
 

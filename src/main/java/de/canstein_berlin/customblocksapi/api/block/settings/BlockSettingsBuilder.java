@@ -2,6 +2,7 @@ package de.canstein_berlin.customblocksapi.api.block.settings;
 
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 
 /**
  * Block Settings Builder for easy modification
@@ -113,6 +114,20 @@ public class BlockSettingsBuilder {
         this.settings.setNoBaseBlock(noBaseBlock);
         return this;
     }
+
+    /**
+     * The custom place and BreakSounds of the block. These sounds are only played if the placeItem is not a block and the block has no baseBlock
+     *
+     * @param placeSound The place sound of the block
+     * @param breakSound The break Sound of the block
+     * @return
+     */
+    public BlockSettingsBuilder widthSound(Sound placeSound, Sound breakSound) {
+        this.settings.setPlaceSound(placeSound);
+        this.settings.setBreakSound(breakSound);
+        return this;
+    }
+
 
     /**
      * Set the size in blocks of the custom block
