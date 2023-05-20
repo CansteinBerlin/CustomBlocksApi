@@ -1,8 +1,8 @@
 package de.canstein_berlin.customblocksapi.api.block;
 
 import com.google.common.collect.ImmutableMap;
-import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.drops.IDrop;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;

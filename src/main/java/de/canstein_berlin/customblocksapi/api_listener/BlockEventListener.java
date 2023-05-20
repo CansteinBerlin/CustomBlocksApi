@@ -1,6 +1,6 @@
-package de.canstein_berlin.customblocksapi.listener;
+package de.canstein_berlin.customblocksapi.api_listener;
 
-import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.context.ActionResult;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import io.papermc.paper.event.entity.EntityMoveEvent;

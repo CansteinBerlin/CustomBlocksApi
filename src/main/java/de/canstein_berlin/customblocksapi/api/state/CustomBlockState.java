@@ -1,7 +1,7 @@
 package de.canstein_berlin.customblocksapi.api.state;
 
 import com.google.common.collect.ImmutableMap;
-import de.canstein_berlin.customblocksapi.CustomBlocksApi;
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import org.bukkit.Location;

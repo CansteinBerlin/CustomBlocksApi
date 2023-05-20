@@ -1,7 +1,7 @@
 package de.canstein_berlin.customblocksapi.commands;
 
-import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

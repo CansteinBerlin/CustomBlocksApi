@@ -1,6 +1,5 @@
-package de.canstein_berlin.customblocksapi;
+package de.canstein_berlin.customblocksapi.api;
 
-import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;

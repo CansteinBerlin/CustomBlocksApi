@@ -1,7 +1,7 @@
-package de.canstein_berlin.customblocksapi.listener;
+package de.canstein_berlin.customblocksapi.api_listener;
 
-import de.canstein_berlin.customblocksapi.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;

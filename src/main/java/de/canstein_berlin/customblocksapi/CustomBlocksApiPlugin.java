@@ -1,10 +1,11 @@
 package de.canstein_berlin.customblocksapi;
 
+import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettingsBuilder;
+import de.canstein_berlin.customblocksapi.api_listener.BlockEventListener;
+import de.canstein_berlin.customblocksapi.api_listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.commands.ConvertToPlaceBlockItem;
 import de.canstein_berlin.customblocksapi.commands.TestPlacementCommand;
-import de.canstein_berlin.customblocksapi.listener.BlockEventListener;
-import de.canstein_berlin.customblocksapi.listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.test.TestBlock;
 import de.canstein_berlin.customblocksapi.test.TestBlockHigher;
 import de.canstein_berlin.customblocksapi.test.TestBlockNoBaseBlock;
