@@ -11,6 +11,7 @@ import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import de.canstein_berlin.customblocksapi.builder.ItemBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,9 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Transformation;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public class TestBlockHigher extends CustomBlock {
 
@@ -32,7 +30,7 @@ public class TestBlockHigher extends CustomBlock {
     }
 
     public TestBlockHigher(BlockSettings settings) {
-        super(settings, 4);
+        super(settings, 4, new ItemBuilder(Material.EMERALD).setCustomModelData(4).setDisplayName("§r§6" + settings.getName()).build());
         setDefaultState(getDefaultState().with(BERRIES, false));
     }
 
@@ -74,7 +72,7 @@ public class TestBlockHigher extends CustomBlock {
 
     @Override
     public void applyInitialModelTransformations(ItemDisplay display) {
-        display.setTransformation(new Transformation(new Vector3f((getBlockRandom().nextFloat() - 0.5f) / 3f, 0, (getBlockRandom().nextFloat() - 0.5f) / 3f), new Quaternionf(), new Vector3f(1, 1, 1), new Quaternionf()));
+        //display.setTransformation(new Transformation(new Vector3f((getBlockRandom().nextFloat() - 0.5f) / 3f, 0, (getBlockRandom().nextFloat() - 0.5f) / 3f), new Quaternionf(), new Vector3f(1, 1, 1), new Quaternionf()));
         display.setRotation(blockRandom.nextInt(360), 0);
     }
 

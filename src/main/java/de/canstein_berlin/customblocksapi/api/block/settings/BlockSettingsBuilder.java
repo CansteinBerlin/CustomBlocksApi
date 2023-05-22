@@ -161,6 +161,7 @@ public class BlockSettingsBuilder {
         if (settings.isNoBaseBlock()) {
             settings.setUsesEntityMovementEvent(false);
             settings.setBaseBlock(Material.AIR);
+            settings.setBreakInstantly(true);
         } else {
             size(1f, 1f);
         }

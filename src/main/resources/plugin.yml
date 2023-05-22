@@ -8,3 +8,5 @@ commands:
     description: "Command to convert every Item to a placeable block"
   testplacement:
     description: "Test placement and performance"
+  listCustomBlocks:
+    description: "Command to show all registered custom blocks"

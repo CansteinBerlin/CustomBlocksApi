@@ -11,6 +11,7 @@ import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import de.canstein_berlin.customblocksapi.builder.ItemBuilder;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -36,7 +37,7 @@ public class TestBlock extends CustomBlock {
     }
 
     public TestBlock(BlockSettings settings) {
-        super(settings, 1);
+        super(settings, 1, new ItemBuilder(Material.IRON_NUGGET).setCustomModelData(1).setDisplayName("§r§6" + settings.getName()).build());
         setDefaultState(getDefaultState().with(ENABLED, false).with(AGE0_5, 4).with(FACING, BlockFace.SOUTH));
     }
 

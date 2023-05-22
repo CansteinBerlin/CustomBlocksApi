@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICustomBlocksApi {
@@ -91,6 +92,13 @@ public interface ICustomBlocksApi {
      * @return Whether there is a block that wants to use the entityMovement event
      */
     boolean usesEntityMovement();
+
+    /**
+     * Gets all registered custom blocks
+     *
+     * @return
+     */
+    List<CustomBlock> getAllCustomBlocks();
 
     static NamespacedKey getKeyFromPersistentDataContainer(PersistentDataContainer container) {
         if (!container.has(CustomBlock.CUSTOM_BLOCK_KEY)) return null;

@@ -13,6 +13,7 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -24,6 +25,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -41,10 +43,13 @@ public class CustomBlock {
     protected CustomBlockState defaultState; // Default State of the block
     protected final int customModelDataDefault; //Default custom Model data if cmdLookupTable fails
     protected final Random blockRandom; // Block Random that from which drops are generated. Should be used for functionality inside the block
-    private final List<IDrop> drops;
+    private final List<IDrop> drops; // The drops the block can drop
+    private ItemStack mainPlaceItemStack; // The place ItemStack
 
-    public CustomBlock(BlockSettings settings, int customModelDataDefault) {
+
+    public CustomBlock(BlockSettings settings, int customModelDataDefault, ItemStack placeItemStack) {
         this.settings = settings;
+        this.mainPlaceItemStack = placeItemStack;
         this.customModelDataDefault = customModelDataDefault;
         this.blockRandom = new Random();
 
@@ -59,6 +64,10 @@ public class CustomBlock {
         //Custom Model Data Lookup Table
         customModelDataLookupTable = createCMDLookupTable(new CMDLookupTableBuilder(this));
         drops = createDrops();
+    }
+
+    public CustomBlock(BlockSettings settings, int customModelDataDefault) {
+        this(settings, customModelDataDefault, createDefaultPlaceItem(settings, customModelDataDefault));
     }
 
     /**
@@ -97,6 +106,16 @@ public class CustomBlock {
         ItemMeta meta = stack.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
+        stack.setItemMeta(meta);
+        return stack;
+    }
+
+    protected static ItemStack createDefaultPlaceItem(BlockSettings settings, int customModelData) {
+        ItemStack stack = new ItemStack(settings.getDisplayMaterial());
+        ItemMeta meta = stack.getItemMeta();
+        meta.setCustomModelData(customModelData);
+        meta.lore(Arrays.asList(Component.text("§r§5Use this Item to place the block")));
+        meta.displayName(Component.text("§6" + settings.getName()));
         stack.setItemMeta(meta);
         return stack;
     }
@@ -297,6 +316,7 @@ public class CustomBlock {
 
     public void setKey(NamespacedKey key) {
         this.key = key;
+        mainPlaceItemStack = toPlaceItemStack(mainPlaceItemStack);
     }
 
     public ImmutableMap<String, Property<?>> getProperties() {
@@ -321,5 +341,9 @@ public class CustomBlock {
 
     public Random getBlockRandom() {
         return blockRandom;
+    }
+
+    public ItemStack getMainPlaceItemStack() {
+        return mainPlaceItemStack;
     }
 }

@@ -1,0 +1,7 @@
+prefix: "&5[&bCustomBlocksAPI&5] §r"
+
+lang:
+  commands:
+    noPlayer: "&cYou have to be a player to use this command!"
+    list:
+      success: "&6Opened the custom blocks Gui"

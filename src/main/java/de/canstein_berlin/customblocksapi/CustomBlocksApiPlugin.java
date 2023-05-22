@@ -5,21 +5,20 @@ import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettingsBuilde
 import de.canstein_berlin.customblocksapi.api_listener.BlockEventListener;
 import de.canstein_berlin.customblocksapi.api_listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.commands.ConvertToPlaceBlockItem;
+import de.canstein_berlin.customblocksapi.commands.CustomBlocksGUICommand;
 import de.canstein_berlin.customblocksapi.commands.TestPlacementCommand;
 import de.canstein_berlin.customblocksapi.test.TestBlock;
 import de.canstein_berlin.customblocksapi.test.TestBlockHigher;
 import de.canstein_berlin.customblocksapi.test.TestBlockNoBaseBlock;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public final class CustomBlocksApiPlugin extends JavaPlugin {
 
+    public static String PREFIX;
     public static TestBlock TEST_BLOCK;
     public static TestBlockNoBaseBlock TEST_BLOCK_NO_BASE_BLOCK;
     private static CustomBlocksApiPlugin instance;
@@ -28,6 +27,11 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        //Set up config
+        saveResource("config.yml", true);
+        PREFIX = getLang("prefix");
+
         TEST_BLOCK = new TestBlock(BlockSettingsBuilder.empty()
                 .baseBlock(Material.GLASS)
                 .displayMaterial(Material.STICK)
@@ -64,6 +68,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         //Test Commands
         getCommand("convertToPlaceable").setExecutor(new ConvertToPlaceBlockItem());
         getCommand("testplacement").setExecutor(new TestPlacementCommand());
+        getCommand("listCustomBlocks").setExecutor(new CustomBlocksGUICommand());
 
         Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockEventListener(), this);
@@ -80,6 +85,18 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
 
     public static CustomBlocksApiPlugin getInstance() {
         return instance;
+    }
+
+    public static String getLang(String key, String... args) {
+        String lang = CustomBlocksApiPlugin.getInstance().getConfig().getString(key, "&cUnknown language key &6" + key);
+        for (int i = 0; i + 1 < args.length; i += 2) {
+            lang = lang.replace("%" + args[i] + "%", args[i + 1]);
+        }
+        return ChatColor.translateAlternateColorCodes('&', lang);
+    }
+
+    public static String getPrefixedLang(String key, String... args) {
+        return PREFIX + getLang(key, args);
     }
 
     @Override

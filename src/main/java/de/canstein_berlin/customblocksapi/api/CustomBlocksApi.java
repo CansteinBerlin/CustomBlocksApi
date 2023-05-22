@@ -13,10 +13,7 @@ import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.BoundingBox;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class CustomBlocksApi implements ICustomBlocksApi {
 
@@ -84,6 +81,11 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     @Override
     public boolean usesEntityMovement() {
         return usesEntityMovement;
+    }
+
+    @Override
+    public List<CustomBlock> getAllCustomBlocks() {
+        return List.copyOf(registeredCustomBlocks.values());
     }
 
     @Override
