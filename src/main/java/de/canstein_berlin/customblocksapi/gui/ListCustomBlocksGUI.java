@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+Permission to get items: customblocks.commands.get
+ */
 public class ListCustomBlocksGUI extends ChestGui {
 
     private final PaginatedPane pages;
@@ -90,6 +93,8 @@ public class ListCustomBlocksGUI extends ChestGui {
         stack.setItemMeta(meta);
 
         GuiItem item = new GuiItem(stack, (inventoryClickEvent -> {
+            if (!inventoryClickEvent.getWhoClicked().hasPermission("customblocks.commands.get")) return;
+
             int amount = 1;
             if (inventoryClickEvent.isShiftClick()) {
                 amount = 64;
@@ -101,9 +106,5 @@ public class ListCustomBlocksGUI extends ChestGui {
         }));
 
         return item;
-    }
-
-    private String toSize(String input, int size) {
-        return input + " ".repeat(Math.max(size - input.length(), 0));
     }
 }

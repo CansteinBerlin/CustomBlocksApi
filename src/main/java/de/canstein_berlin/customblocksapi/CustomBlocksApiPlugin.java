@@ -4,9 +4,8 @@ import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettingsBuilder;
 import de.canstein_berlin.customblocksapi.api_listener.BlockEventListener;
 import de.canstein_berlin.customblocksapi.api_listener.BlockManageListener;
-import de.canstein_berlin.customblocksapi.commands.ConvertToPlaceBlockItem;
 import de.canstein_berlin.customblocksapi.commands.CustomBlocksGUICommand;
-import de.canstein_berlin.customblocksapi.commands.TestPlacementCommand;
+import de.canstein_berlin.customblocksapi.commands.GetCustomBlockCommand;
 import de.canstein_berlin.customblocksapi.test.TestBlock;
 import de.canstein_berlin.customblocksapi.test.TestBlockHigher;
 import de.canstein_berlin.customblocksapi.test.TestBlockNoBaseBlock;
@@ -66,9 +65,9 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_higher"), TEST_BLOCK_HIGHER);
 
         //Test Commands
-        getCommand("convertToPlaceable").setExecutor(new ConvertToPlaceBlockItem());
-        getCommand("testplacement").setExecutor(new TestPlacementCommand());
         getCommand("listCustomBlocks").setExecutor(new CustomBlocksGUICommand());
+        getCommand("getCustomBlock").setExecutor(new GetCustomBlockCommand());
+        getCommand("getCustomBlock").setTabCompleter(new GetCustomBlockCommand());
 
         Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockEventListener(), this);

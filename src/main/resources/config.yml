@@ -3,5 +3,10 @@ prefix: "&5[&bCustomBlocksAPI&5] §r"
 lang:
   commands:
     noPlayer: "&cYou have to be a player to use this command!"
+    noPermission: "&cYou don't have permission to use this command!"
     list:
       success: "&6Opened the custom blocks Gui"
+    get:
+      invalidCommand: "&cInvalid command. Please use &6/getcustomblock <key>"
+      invalidKey: "&cUnknown Custom Block Key &6%key%"
+      success: "&6Successfully retrieved custom block §6%block%"
