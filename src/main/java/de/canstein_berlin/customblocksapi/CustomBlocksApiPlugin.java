@@ -36,6 +36,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .customName("Test Block")
                 .dropsWhenExploded(true)
                 .widthSound(Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK)
+                .breakInstantly(true)
                 .build()
         );
 

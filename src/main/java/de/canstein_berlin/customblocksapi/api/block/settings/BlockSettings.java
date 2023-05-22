@@ -19,6 +19,7 @@ public class BlockSettings {
     private float height; // Height of the default block defaults to 1
     private Sound placeSound;
     private Sound breakSound;
+    private boolean breakInstantly;
 
 
     protected BlockSettings() { // Empty Block Settings
@@ -33,6 +34,7 @@ public class BlockSettings {
         height = 1;
         placeSound = Sound.BLOCK_STONE_PLACE;
         breakSound = Sound.BLOCK_STONE_BREAK;
+        breakInstantly = false;
     }
 
     protected BlockSettings(Material baseBlock) {
@@ -124,5 +126,13 @@ public class BlockSettings {
 
     public void setBreakSound(Sound breakSound) {
         this.breakSound = breakSound;
+    }
+
+    public void setBreakInstantly(boolean breakInstantly) {
+        this.breakInstantly = breakInstantly;
+    }
+
+    public boolean isBreakInstantly() {
+        return breakInstantly;
     }
 }

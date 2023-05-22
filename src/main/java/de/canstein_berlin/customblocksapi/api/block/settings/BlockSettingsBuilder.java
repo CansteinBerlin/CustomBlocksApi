@@ -116,6 +116,17 @@ public class BlockSettingsBuilder {
     }
 
     /**
+     * Whether the block is broken instantly. Defaults to false
+     *
+     * @param breakInstantly
+     * @return
+     */
+    public BlockSettingsBuilder breakInstantly(boolean breakInstantly) {
+        this.settings.setBreakInstantly(breakInstantly);
+        return this;
+    }
+
+    /**
      * The custom place and BreakSounds of the block. These sounds are only played if the placeItem is not a block and the block has no baseBlock
      *
      * @param placeSound The place sound of the block

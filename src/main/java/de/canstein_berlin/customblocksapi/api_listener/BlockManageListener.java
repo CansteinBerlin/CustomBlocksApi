@@ -346,5 +346,15 @@ public class BlockManageListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerBreakBlockInstantly(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK)) return;
+
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getClickedBlock().getLocation());
+        if (state == null) return;
+        boolean stillAlive = state.getParentBlock().onBreak(state, event.getClickedBlock().getWorld(), event.getClickedBlock().getLocation(), event.getPlayer());
+        if (!stillAlive) state.remove(event.getClickedBlock().getLocation(), true);
+    }
+
 
 }

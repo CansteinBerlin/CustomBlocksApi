@@ -168,6 +168,7 @@ public class CustomBlock {
      * @param loc          Location of the block
      */
     public void remove(ItemDisplay validDisplay, @Nullable Interaction interaction, Location loc, boolean shouldDrop) {
+        loc.getBlock().setType(Material.AIR);
         validDisplay.remove();
         if (interaction != null) {
             new BukkitRunnable() {
@@ -178,7 +179,6 @@ public class CustomBlock {
             }.runTaskLater(CustomBlocksApiPlugin.getInstance(), 2);
 
         }
-        loc.getBlock().setType(Material.AIR);
 
         if (!shouldDrop) return;
         LootContext context = new LootContext.Builder(loc).build();
