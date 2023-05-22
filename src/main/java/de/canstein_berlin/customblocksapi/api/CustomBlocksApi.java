@@ -97,8 +97,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         ItemDisplay foundDisplay = null;
         CustomBlock foundBlock = null;
         for (Entity e : displays) {
-            if (!(e instanceof ItemDisplay)) continue;
-            ItemDisplay display = ((ItemDisplay) e);
+            if (!(e instanceof ItemDisplay display)) continue;
 
             //Check Block
             NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(display.getPersistentDataContainer());
@@ -119,8 +118,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         if (interactions.size() == 0 && foundDisplay == null) return null;
         Interaction foundInteraction = null;
         for (Entity e : interactions) {
-            if (!(e instanceof Interaction)) continue;
-            Interaction interaction = ((Interaction) e);
+            if (!(e instanceof Interaction interaction)) continue;
             NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(interaction.getPersistentDataContainer());
             if (key == null) continue;
             CustomBlock block = getCustomBlock(key);

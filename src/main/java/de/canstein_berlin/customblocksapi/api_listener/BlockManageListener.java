@@ -245,8 +245,7 @@ public class BlockManageListener implements Listener {
             state.remove(block.getLocation(), state.getParentBlock().getSettings().isDropsWhenExploded());
         }
 
-        if (!(event.getEntity() instanceof Explosive)) return;
-        Explosive explosive = ((Explosive) event.getEntity());
+        if (!(event.getEntity() instanceof Explosive explosive)) return;
         removeBlocksInExplosionRange(event.getEntity().getWorld(), event.getEntity().getBoundingBox(), explosive.getYield());
     }
 
@@ -349,9 +348,12 @@ public class BlockManageListener implements Listener {
     @EventHandler
     public void onPlayerBreakBlockInstantly(PlayerInteractEvent event) {
         if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK)) return;
+        if (event.getClickedBlock() == null) return;
 
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getClickedBlock().getLocation());
         if (state == null) return;
+        if (!state.getParentBlock().getSettings().isBreakInstantly()) return;
+
         boolean stillAlive = state.getParentBlock().onBreak(state, event.getClickedBlock().getWorld(), event.getClickedBlock().getLocation(), event.getPlayer());
         if (!stillAlive) state.remove(event.getClickedBlock().getLocation(), true);
     }
