@@ -14,10 +14,14 @@ import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Transformation;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class TestBlockHigher extends CustomBlock {
 
@@ -66,6 +70,12 @@ public class TestBlockHigher extends CustomBlock {
         }.runTaskLater(CustomBlocksApiPlugin.getInstance(), blockRandom.nextInt(60) + 40);
 
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void applyInitialModelTransformations(ItemDisplay display) {
+        display.setTransformation(new Transformation(new Vector3f((getBlockRandom().nextFloat() - 0.5f) / 3f, 0, (getBlockRandom().nextFloat() - 0.5f) / 3f), new Quaternionf(), new Vector3f(1, 1, 1), new Quaternionf()));
+        display.setRotation(blockRandom.nextInt(360), 0);
     }
 
     @Override

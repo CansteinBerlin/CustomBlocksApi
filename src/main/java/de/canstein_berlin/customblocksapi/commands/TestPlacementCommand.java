@@ -19,7 +19,9 @@ public class TestPlacementCommand implements CommandExecutor {
 
         for (int x = 0; x < 50; x++) {
             for (int z = 0; z < 50; z++) {
-                CustomBlocksApi.getInstance().setBlock(location.clone().add(x, 0, z), CustomBlocksApiPlugin.TEST_BLOCK);
+                for (int y = 0; y < 2; y++) {
+                    CustomBlocksApi.getInstance().setBlock(location.clone().add(x, y, z), CustomBlocksApiPlugin.TEST_BLOCK);
+                }
             }
         }
 

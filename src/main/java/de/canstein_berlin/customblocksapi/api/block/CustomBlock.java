@@ -133,7 +133,10 @@ public class CustomBlock {
             entity.setItemStack(stack);
 
             //Rotate Item According to the element
-            if (element == null || element.getRotations().isEmpty()) return;
+            if (element == null || element.getRotations().isEmpty()) {
+                applyInitialModelTransformations(entity);
+                return;
+            }
             int xRotation = 0;
             int yRotation = 0;
             for (Map.Entry<Axis, Integer> entry : element.getRotations().entrySet()) {
@@ -141,6 +144,9 @@ public class CustomBlock {
                 if (entry.getKey() == Axis.X) yRotation = entry.getValue();
             }
             entity.setRotation(xRotation, yRotation);
+
+            //Apply Custom Transformations
+            applyInitialModelTransformations(entity);
         });
 
         if (!settings.isNoBaseBlock()) {
@@ -271,6 +277,14 @@ public class CustomBlock {
      */
     public boolean onBreak(CustomBlockState state, World world, Location location, Player player) {
         return false;
+    }
+
+    /**
+     * This method should be overridden when you want to apply initial model transformations like randomly shifting the model slightly
+     *
+     * @param display The display displaying the item
+     */
+    public void applyInitialModelTransformations(ItemDisplay display) {
     }
 
     public NamespacedKey getKey() {
