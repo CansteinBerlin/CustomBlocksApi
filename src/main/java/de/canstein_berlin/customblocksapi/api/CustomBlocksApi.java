@@ -88,7 +88,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
 
     @Override
     public CustomBlockState getStateFromWorld(Location location) {
-        if (!customBlockMaterials.contains(location.getBlock().getType())) return null;
+        //if (!customBlockMaterials.contains(location.getBlock().getType())) return null;
 
         //Display
         BoundingBox box = BoundingBox.of(location.toBlockLocation().add(0.5, 0.5, 0.5), 0.05, 0.05, 0.05);

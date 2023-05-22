@@ -318,6 +318,13 @@ public class BlockManageListener implements Listener {
         event.setCancelled(true);
     }
 
+    @EventHandler
+    public void onBlockFromTo(BlockFromToEvent event) {
+        CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getToBlock().getLocation());
+        if (state == null) return;
+        event.setCancelled(true);
+    }
+
     private boolean checkArea(Location start, float width, float height) {
         for (int x = 0; x < Math.ceil(width); x++) {
             for (int y = 0; y < Math.ceil(height); y++) {
