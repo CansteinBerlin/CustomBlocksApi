@@ -28,7 +28,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         instance = this;
 
         //Set up config
-        saveResource("config.yml", true);
+        saveResource("config.yml", false);
         PREFIX = getLang("prefix");
 
         TEST_BLOCK = new TestBlock(BlockSettingsBuilder.empty()
@@ -69,6 +69,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         getCommand("getCustomBlock").setExecutor(new GetCustomBlockCommand());
         getCommand("getCustomBlock").setTabCompleter(new GetCustomBlockCommand());
 
+        //Register Api Listeners
         Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockEventListener(), this);
 

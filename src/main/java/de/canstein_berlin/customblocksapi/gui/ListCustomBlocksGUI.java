@@ -12,6 +12,7 @@ import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.builder.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,14 +30,14 @@ public class ListCustomBlocksGUI extends ChestGui {
     private final StaticPane navigation;
     private final List<CustomBlock> blocks;
 
-    public ListCustomBlocksGUI() {
+    public ListCustomBlocksGUI(Player player) {
         super(6, "§6CustomBlocks", CustomBlocksApiPlugin.getInstance());
 
         this.blocks = CustomBlocksApi.getInstance().getAllCustomBlocks();
 
         //Setup Gui
         pages = new PaginatedPane(0, 0, 9, 5);
-        pages.populateWithGuiItems(blocks.stream().map(this::getGuiItemFromBlock).collect(Collectors.toList()));
+        pages.populateWithGuiItems(blocks.stream().map(block -> getGuiItemFromBlock(block, player)).collect(Collectors.toList()));
         addPane(pages);
 
         //Background
@@ -71,7 +72,7 @@ public class ListCustomBlocksGUI extends ChestGui {
         setOnGlobalClick(event -> event.setCancelled(true));
     }
 
-    private GuiItem getGuiItemFromBlock(CustomBlock customBlock) {
+    private GuiItem getGuiItemFromBlock(CustomBlock customBlock, Player player) {
 
         ItemStack stack = customBlock.getMainPlaceItemStack().clone();
         stack.setAmount(1);
@@ -79,8 +80,10 @@ public class ListCustomBlocksGUI extends ChestGui {
         if (lore == null) lore = new ArrayList<>();
 
         lore.clear();
-        lore.add(Component.text("§r§7Click to get"));
-        lore.add(Component.text(" "));
+        if (!player.hasPermission("customblocks.commands.get")) {
+            lore.add(Component.text("§r§7Click to get"));
+            lore.add(Component.text(" "));
+        }
         lore.add(Component.text("§r§7Settings:"));
         lore.add(Component.text("§r§7NameSpacedKey:  " + customBlock.getKey().asString()));
         lore.add(Component.text("§r§7Size:                " + "(" + customBlock.getSettings().getWidth() + "/" + customBlock.getSettings().getHeight() + ")"));

@@ -6,6 +6,7 @@ import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.Property;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -28,8 +29,11 @@ public class CustomBlockState {
     private ItemDisplay display;
     @Nullable
     private Interaction interaction;
+    @Nullable
+    private Location location;
     private final HashMap<Property<?>, Property.Value<?>> propertyValues;
     private boolean updated;
+
 
     public CustomBlockState(CustomBlock parentBlock, ImmutableMap<String, Property<?>> properties) {
         this.parentBlock = parentBlock;
@@ -42,12 +46,16 @@ public class CustomBlockState {
         updated = true;
         interaction = null;
         display = null;
+        location = null;
     }
 
     public CustomBlockState(CustomBlock parentBlock, ItemDisplay display, @Nullable Interaction interaction) {
         this.parentBlock = parentBlock;
         this.display = display;
         this.interaction = interaction;
+
+        Entity locationEntity = interaction == null ? display : interaction;
+        location = locationEntity.getLocation().subtract(parentBlock.getSettings().getWidth() / 2, 0, parentBlock.getSettings().getWidth() / 2);
 
         propertyValues = new HashMap<>();
         PersistentDataContainer dataContainer = display.getPersistentDataContainer();
@@ -78,7 +86,18 @@ public class CustomBlockState {
         this.propertyValues = properties;
     }
 
+    private CustomBlockState(CustomBlock parentBlock, @Nullable ItemDisplay display, @Nullable Interaction interaction, @Nullable Location location, HashMap<Property<?>, Property.Value<?>> propertyValues, boolean updated) {
+        this.parentBlock = parentBlock;
+        this.display = display;
+        this.interaction = interaction;
+        this.location = location;
+        this.propertyValues = propertyValues;
+        this.updated = updated;
+    }
+
     public CustomBlockState clone() {
+        if (display != null)
+            return new CustomBlockState(parentBlock, display, interaction, location, (HashMap<Property<?>, Property.Value<?>>) Map.copyOf(propertyValues), updated);
         return new CustomBlockState(this.parentBlock, (HashMap<Property<?>, Property.Value<?>>) Map.copyOf(propertyValues));
     }
 

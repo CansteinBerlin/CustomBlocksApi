@@ -25,7 +25,7 @@ public class CustomBlocksGUICommand implements CommandExecutor {
         }
 
         Player player = ((Player) commandSender);
-        new ListCustomBlocksGUI().show(player);
+        new ListCustomBlocksGUI(player).show(player);
         player.sendMessage(Component.text(CustomBlocksApiPlugin.getPrefixedLang("lang.commands.list.success")));
         return true;
     }

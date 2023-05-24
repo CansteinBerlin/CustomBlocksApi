@@ -24,7 +24,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     private final HashSet<Material> customBlockMaterials;
     private boolean usesNeighborUpdate, usesEntityMovement;
 
-    public CustomBlocksApi() {
+    private CustomBlocksApi() {
         CustomBlocksApi.instance = this;
         registeredCustomBlocks = new HashMap<>();
         neighborUpdateBlockMaterials = new HashSet<>();
