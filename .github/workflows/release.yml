@@ -25,7 +25,6 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
 
       - name: Upload release
-        run: gh release upload ${GITHUB_REF##*/} ./target/CustomBlocksApi-*.jar
         env:
           GH_TOKEN: ${{ github.token }}
-
+        run: gh release upload ${GITHUB_REF##*/} ./target/CustomBlocksApi-*.jar
