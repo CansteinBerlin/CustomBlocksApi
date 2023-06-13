@@ -1,8 +1,11 @@
 package de.canstein_berlin.customblocksapi.api;
 
+import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import de.canstein_berlin.customblocksapi.api.tick.ITickable;
+import de.canstein_berlin.customblocksapi.api.tick.TickState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,6 +14,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
@@ -23,6 +27,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     private final HashSet<Material> entityMovementBlockMaterials;
     private final HashSet<Material> customBlockMaterials;
     private boolean usesNeighborUpdate, usesEntityMovement;
+    private final HashMap<ITickable, HashMap<UUID, TickState>> tickableStates;
 
     private CustomBlocksApi() {
         CustomBlocksApi.instance = this;
@@ -32,6 +37,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         entityMovementBlockMaterials = new HashSet<>();
         usesNeighborUpdate = false;
         usesEntityMovement = false;
+        tickableStates = new HashMap<>();
     }
 
     public static ICustomBlocksApi getInstance() {
@@ -44,6 +50,8 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         if (override || !registeredCustomBlocks.containsKey(key)) {
             registeredCustomBlocks.put(key, customBlock);
             customBlockMaterials.add(customBlock.getSettings().getBaseBlock());
+
+            //Register for updates
             if (customBlock.getSettings().isUsesNeighborUpdateEvent()) {
                 usesNeighborUpdate = true;
                 neighborUpdateBlockMaterials.add(customBlock.getSettings().getBaseBlock());
@@ -53,9 +61,28 @@ public class CustomBlocksApi implements ICustomBlocksApi {
                 usesEntityMovement = true;
                 entityMovementBlockMaterials.add(customBlock.getSettings().getBaseBlock());
             }
+
+            //Register for Ticks
+            if (customBlock instanceof ITickable) {
+                tickableStates.put((ITickable) customBlock, new HashMap<>());
+                registerBlockTicker(customBlock);
+            }
             return true;
         }
         return false;
+    }
+
+    private void registerBlockTicker(CustomBlock customBlock) {
+        if (!(customBlock instanceof ITickable)) return;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Map.Entry<UUID, TickState> tickStates : tickableStates.get(customBlock).entrySet()) {
+                    tickStates.getValue().incrementCount();
+                    ((ITickable) customBlock).onTick(tickStates.getValue());
+                }
+            }
+        }.runTaskTimer(CustomBlocksApiPlugin.getInstance(), 0, ((ITickable) customBlock).getTickDelay());
     }
 
     @Override
@@ -84,14 +111,45 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     }
 
     @Override
+    public void setBlockStateToTick(CustomBlock customBlock, CustomBlockState state) {
+        if (!(customBlock instanceof ITickable)) return;
+        if (state.getDisplay() == null) return;
+        if (!tickableStates.containsKey(customBlock))
+            throw new RuntimeException("Tried to add a non tickable block to the ticked block list");
+
+        //No BlockState Found
+        if (!tickableStates.get(customBlock).containsKey(state.getDisplay())) {
+            tickableStates.get(customBlock).put(state.getDisplay().getUniqueId(), new TickState(state, 0));
+            return;
+        }
+
+        //Replace BlockState
+        tickableStates.get(customBlock).get(state.getDisplay().getUniqueId()).update(state);
+
+    }
+
+    @Override
+    public TickState getTickedBlockFromEntity(CustomBlock customBlock, ItemDisplay display) {
+        if (!(customBlock instanceof ITickable)) return null;
+        if (tickableStates.get(customBlock) == null) return null;
+        return tickableStates.get(customBlock).get(display);
+    }
+
+    @Override
+    public void removeTickedBlock(CustomBlock block, CustomBlockState state) {
+        if (!(block instanceof ITickable)) return;
+        if (!tickableStates.containsKey(block)) return;
+
+        tickableStates.get(block).remove(state.getDisplay().getUniqueId());
+    }
+
+    @Override
     public List<CustomBlock> getAllCustomBlocks() {
         return List.copyOf(registeredCustomBlocks.values());
     }
 
     @Override
     public CustomBlockState getStateFromWorld(Location location) {
-        //if (!customBlockMaterials.contains(location.getBlock().getType())) return null;
-
         //Display
         BoundingBox box = BoundingBox.of(location.toBlockLocation().add(0.5, 0.5, 0.5), 0.05, 0.05, 0.05);
         Collection<Entity> displays = location.getWorld().getNearbyEntities(box, (entity) -> entity instanceof ItemDisplay);
@@ -109,6 +167,12 @@ public class CustomBlocksApi implements ICustomBlocksApi {
 
             foundDisplay = display;
             foundBlock = block;
+        }
+
+        //Found Display, now check if it is tickable and cached
+        if (foundBlock instanceof ITickable) {
+            TickState state = getTickedBlockFromEntity(foundBlock, foundDisplay);
+            if (state != null) return state.getCustomBlockState();
         }
 
         //Found Display and block has base block
@@ -165,6 +229,12 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         }
         if (display == null) return null; // Invalid Block
 
+        //Check if display is in Ticked block list
+        if (block instanceof ITickable) {
+            TickState state = CustomBlocksApi.getInstance().getTickedBlockFromEntity(block, display);
+            if (state != null) return state.getCustomBlockState();
+        }
+
         if (interaction == null && block.getSettings().isNoBaseBlock()) {
             Collection<Interaction> interactions = e.getLocation().toBlockLocation().add(0, 0.5, 0).getNearbyEntitiesByType(Interaction.class, 0.1);
             for (Interaction i : interactions) {
@@ -179,7 +249,12 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         }
 
 
-        return new CustomBlockState(block, display, interaction);
+        CustomBlockState newState = new CustomBlockState(block, display, interaction);
+        if (block instanceof ITickable) { //If BlockState is tickable save/update it
+            setBlockStateToTick(block, newState);
+        }
+
+        return newState;
     }
 
     @Override
@@ -202,5 +277,13 @@ public class CustomBlocksApi implements ICustomBlocksApi {
     @Override
     public String getApiName() {
         return "cba";
+    }
+
+    public int cachedBlocks() {
+        int count = 0;
+        for (ITickable tickable : tickableStates.keySet()) {
+            count += tickableStates.get(tickable).size();
+        }
+        return count;
     }
 }

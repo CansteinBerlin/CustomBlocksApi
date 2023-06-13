@@ -13,6 +13,7 @@ import de.canstein_berlin.customblocksapi.api.render.CMDLookupTable;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableBuilder;
 import de.canstein_berlin.customblocksapi.api.render.CMDLookupTableElement;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import de.canstein_berlin.customblocksapi.api.tick.ITickable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -58,7 +59,7 @@ public class CustomBlock {
         appendProperties(listBuilder);
         properties = ImmutableMap.copyOf(listBuilder.build());
 
-        //Define default state can be changed later
+        //Define default customBlockState can be changed later
         defaultState = new CustomBlockState(this, properties);
 
         //Custom Model Data Lookup Table
@@ -131,7 +132,7 @@ public class CustomBlock {
         if (state == null) return false;
 
         //Spawn Display Entity
-        loc.getWorld().spawn(loc.clone().add(settings.getWidth() / 2, 0.5, settings.getWidth() / 2), ItemDisplay.class, (entity) -> {
+        ItemDisplay display = loc.getWorld().spawn(loc.clone().add(settings.getWidth() / 2, 0.5, settings.getWidth() / 2), ItemDisplay.class, (entity) -> {
             //Entity Setup
             entity.getPersistentDataContainer().set(CUSTOM_BLOCK_KEY, PersistentDataType.STRING, key.asString());
             entity.setBrightness(new Display.Brightness(15, 15));
@@ -168,6 +169,7 @@ public class CustomBlock {
             applyInitialModelTransformations(entity);
         });
 
+
         if (!settings.isNoBaseBlock()) {
             //Set Block if base block present
             loc.getBlock().setType(settings.getBaseBlock());
@@ -183,6 +185,11 @@ public class CustomBlock {
 
         //Call event
         onPlaced(state, loc.getWorld(), loc, ctx.getPlayer(), ctx.getStack());
+
+        //Register Tickable Block
+        if (this instanceof ITickable) {
+            CustomBlocksApi.getInstance().setBlockStateToTick(this, CustomBlocksApi.getInstance().getStateFromWorld(display));
+        }
         return true;
     }
 
@@ -193,6 +200,11 @@ public class CustomBlock {
      * @param loc          Location of the block
      */
     public void remove(ItemDisplay validDisplay, @Nullable Interaction interaction, Location loc, boolean shouldDrop) {
+        //Remove Tickable reference
+        if (this instanceof ITickable) {
+            CustomBlocksApi.getInstance().removeTickedBlock(this, CustomBlocksApi.getInstance().getStateFromWorld(validDisplay));
+        }
+
         loc.getBlock().setType(Material.AIR);
         validDisplay.remove();
         if (interaction != null) {
@@ -241,7 +253,7 @@ public class CustomBlock {
     /**
      * Method called if the player right-clicks the block. Will be called for both EquipmentSlot.HAND and EquipmentSlot.OFF_HAND
      *
-     * @param state    The current state of the block clicked
+     * @param state    The current customBlockState of the block clicked
      * @param world    The world the block is in
      * @param location The Location the block is at
      * @param player   The player that clicked the block
@@ -255,7 +267,7 @@ public class CustomBlock {
     /**
      * Is called AFTER the block is placed in the world. To prevent the block from placing or setting the initial BlockState of the block use {@link CustomBlock#getPlacementState(ItemPlacementContext)}
      *
-     * @param state    The current state of the block placed
+     * @param state    The current customBlockState of the block placed
      * @param world    The world the block is in
      * @param location The location the block is placed at
      * @param placer   The player placing the block. Can be null for example if a plugin placed the block.
@@ -277,7 +289,7 @@ public class CustomBlock {
     /**
      * Fired when an entity steps on the block
      *
-     * @param state    The state of the block
+     * @param state    The customBlockState of the block
      * @param world    The world the block is in
      * @param location The location the block is at
      * @param entity   The entity that stepped on the block
@@ -288,7 +300,7 @@ public class CustomBlock {
     /**
      * Called when a player breaks the block. Called BEFORE the block is removed
      *
-     * @param state    The state of the block
+     * @param state    The customBlockState of the block
      * @param world    The world the block is in
      * @param location The Location the block is at
      * @param player   The player that broke the block
@@ -331,10 +343,13 @@ public class CustomBlock {
         CMDLookupTableElement element = customModelDataLookupTable.match(state);
 
         //Set Display Item
+        setManualCustomModelData(element == null ? customModelDataDefault : element.getCustomModelData(), display);
+    }
+
+    protected void setManualCustomModelData(int customModelData, ItemDisplay display) {
         ItemStack stack = new ItemStack(settings.getDisplayMaterial());
         ItemMeta meta = stack.getItemMeta();
-        if (element == null) meta.setCustomModelData(customModelDataDefault);
-        else meta.setCustomModelData(element.getCustomModelData());
+        meta.setCustomModelData(customModelData);
         stack.setItemMeta(meta);
         display.setItemStack(stack);
     }

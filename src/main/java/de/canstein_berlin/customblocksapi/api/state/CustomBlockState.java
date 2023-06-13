@@ -163,4 +163,14 @@ public class CustomBlockState {
         parentBlock.remove(display, interaction, location, shouldDrop);
 
     }
+
+    @Nullable
+    public ItemDisplay getDisplay() {
+        return display;
+    }
+
+    @Nullable
+    public Interaction getInteraction() {
+        return interaction;
+    }
 }

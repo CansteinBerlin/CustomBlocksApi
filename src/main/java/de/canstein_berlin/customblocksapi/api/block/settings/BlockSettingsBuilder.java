@@ -133,7 +133,7 @@ public class BlockSettingsBuilder {
      * @param breakSound The break Sound of the block
      * @return
      */
-    public BlockSettingsBuilder widthSound(Sound placeSound, Sound breakSound) {
+    public BlockSettingsBuilder withSound(Sound placeSound, Sound breakSound) {
         this.settings.setPlaceSound(placeSound);
         this.settings.setBreakSound(breakSound);
         return this;
@@ -164,6 +164,9 @@ public class BlockSettingsBuilder {
             settings.setBreakInstantly(true);
         } else {
             size(1f, 1f);
+            if (settings.getBaseBlock().isAir()) {
+                settings.setBaseBlock(Material.STONE);
+            }
         }
         return settings;
     }

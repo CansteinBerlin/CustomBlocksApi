@@ -2,10 +2,12 @@ package de.canstein_berlin.customblocksapi.api;
 
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
+import de.canstein_berlin.customblocksapi.api.tick.TickState;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemDisplay;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -94,6 +96,27 @@ public interface ICustomBlocksApi {
     boolean usesEntityMovement();
 
     /**
+     * Internal use only <p>
+     * Add a block to the ticked block list
+     *
+     * @param customBlock The block that should be ticked
+     * @param display     The Item Display ticking
+     */
+    void setBlockStateToTick(CustomBlock customBlock, CustomBlockState state);
+
+    /**
+     * Internal use only <p>
+     * Get a TickState from the ticked block list.
+     *
+     * @param customBlock The base block
+     * @param display     The display corresponding to the block in world
+     * @return The TickState of the entity of null of not existent
+     */
+    TickState getTickedBlockFromEntity(CustomBlock customBlock, ItemDisplay display);
+
+    void removeTickedBlock(CustomBlock block, CustomBlockState state);
+
+    /**
      * Gets all registered custom blocks
      *
      * @return
@@ -114,4 +137,5 @@ public interface ICustomBlocksApi {
      */
     String getApiName();
 
+    int cachedBlocks();
 }

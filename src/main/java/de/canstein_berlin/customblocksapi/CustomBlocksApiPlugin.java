@@ -9,6 +9,7 @@ import de.canstein_berlin.customblocksapi.commands.GetCustomBlockCommand;
 import de.canstein_berlin.customblocksapi.test.TestBlock;
 import de.canstein_berlin.customblocksapi.test.TestBlockHigher;
 import de.canstein_berlin.customblocksapi.test.TestBlockNoBaseBlock;
+import de.canstein_berlin.customblocksapi.test.TestBlockTickable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
     public static TestBlockNoBaseBlock TEST_BLOCK_NO_BASE_BLOCK;
     private static CustomBlocksApiPlugin instance;
     public static TestBlockHigher TEST_BLOCK_HIGHER;
+    public static TestBlockTickable TEST_BLOCK_TICKABLE;
 
     @Override
     public void onEnable() {
@@ -38,7 +40,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .entityMovement(true)
                 .customName("Test Block")
                 .dropsWhenExploded(true)
-                .widthSound(Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK)
+                .withSound(Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK)
                 .breakInstantly(true)
                 .build()
         );
@@ -48,21 +50,30 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
                 .customName("No base block")
                 .noBaseBlock(true)
                 .neighborUpdate(true)
-                .widthSound(Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK)
+                .withSound(Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK)
                 .build());
 
         TEST_BLOCK_HIGHER = new TestBlockHigher(BlockSettingsBuilder.empty()
                 .displayMaterial(Material.STICK)
+                .baseBlock(Material.STONE)
                 .customName("Higher Block")
                 .noBaseBlock(true)
                 .size(1f, 1.5f)
-                .widthSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.BLOCK_SWEET_BERRY_BUSH_BREAK)
+                .withSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, Sound.BLOCK_SWEET_BERRY_BUSH_BREAK)
                 .build()
         );
+
+        TEST_BLOCK_TICKABLE = new TestBlockTickable(BlockSettingsBuilder.empty()
+                .displayMaterial(Material.STICK)
+                .customName("Tickable")
+                .withSound(Sound.BLOCK_FROGLIGHT_PLACE, Sound.BLOCK_SHROOMLIGHT_BREAK)
+                .neighborUpdate(true)
+                .build());
 
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block"), TEST_BLOCK);
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_no_base"), TEST_BLOCK_NO_BASE_BLOCK);
         CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_higher"), TEST_BLOCK_HIGHER);
+        CustomBlocksApi.getInstance().register(new NamespacedKey("cba", "test_block_tickable"), TEST_BLOCK_TICKABLE);
 
         //Test Commands
         getCommand("listCustomBlocks").setExecutor(new CustomBlocksGUICommand());
@@ -77,7 +88,7 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
             @Override
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendActionBar(Component.text((int) Bukkit.getAverageTickTime()));
+                    player.sendActionBar(Component.text("Mspt: " + (int) Bukkit.getAverageTickTime() + "; Cached Blocks: " + CustomBlocksApi.getInstance().cachedBlocks()));
                 }
             }
         }.runTaskTimer(this, 0, 1);

@@ -18,6 +18,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.EntitiesLoadEvent;
+import org.bukkit.event.world.EntitiesUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -356,6 +358,28 @@ public class BlockManageListener implements Listener {
 
         boolean stillAlive = state.getParentBlock().onBreak(state, event.getClickedBlock().getWorld(), event.getClickedBlock().getLocation(), event.getPlayer());
         if (!stillAlive) state.remove(event.getClickedBlock().getLocation(), true);
+    }
+
+    @EventHandler
+    public void onTickableLoad(EntitiesLoadEvent event) {
+        for (Entity e : event.getEntities()) {
+            if (!(e instanceof ItemDisplay)) continue;
+
+            //Get State and Register
+            CustomBlocksApi.getInstance().getStateFromWorld(e);
+        }
+    }
+
+    @EventHandler
+    public void onTickableUnload(EntitiesUnloadEvent event) {
+        for (Entity e : event.getEntities()) {
+            if (!(e instanceof ItemDisplay)) continue;
+
+            //Unregister
+            CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(e);
+            if (state == null) continue;
+            CustomBlocksApi.getInstance().removeTickedBlock(state.getParentBlock(), state);
+        }
     }
 
 
