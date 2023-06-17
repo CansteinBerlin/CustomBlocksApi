@@ -13,7 +13,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 
@@ -77,9 +76,9 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Map.Entry<UUID, TickState> tickStates : tickableStates.get(customBlock).entrySet()) {
-                    tickStates.getValue().incrementCount();
-                    ((ITickable) customBlock).onTick(tickStates.getValue());
+                for (Map.Entry<UUID, TickState> tickState : tickableStates.get(customBlock).entrySet()) {
+                    tickState.getValue().incrementCount();
+                    ((ITickable) customBlock).onTick(tickState.getValue());
                 }
             }
         }.runTaskTimer(CustomBlocksApiPlugin.getInstance(), 0, ((ITickable) customBlock).getTickDelay());
@@ -118,27 +117,27 @@ public class CustomBlocksApi implements ICustomBlocksApi {
             throw new RuntimeException("Tried to add a non tickable block to the ticked block list");
 
         //No BlockState Found
-        if (!tickableStates.get(customBlock).containsKey(state.getDisplay())) {
+        if (!tickableStates.get(customBlock).containsKey(state.getDisplay().getUniqueId())) {
             tickableStates.get(customBlock).put(state.getDisplay().getUniqueId(), new TickState(state, 0));
             return;
         }
 
         //Replace BlockState
         tickableStates.get(customBlock).get(state.getDisplay().getUniqueId()).update(state);
-
     }
 
     @Override
     public TickState getTickedBlockFromEntity(CustomBlock customBlock, ItemDisplay display) {
         if (!(customBlock instanceof ITickable)) return null;
         if (tickableStates.get(customBlock) == null) return null;
-        return tickableStates.get(customBlock).get(display);
+        return tickableStates.get(customBlock).get(display.getUniqueId());
     }
 
     @Override
     public void removeTickedBlock(CustomBlock block, CustomBlockState state) {
         if (!(block instanceof ITickable)) return;
         if (!tickableStates.containsKey(block)) return;
+        if (state.getDisplay() == null) return;
 
         tickableStates.get(block).remove(state.getDisplay().getUniqueId());
     }
@@ -266,7 +265,7 @@ public class CustomBlocksApi implements ICustomBlocksApi {
             replaces = true;
         }
 
-        customBlock.create(new ItemPlacementContext(null, EquipmentSlot.HAND, location, replaces, BlockFace.NORTH));
+        customBlock.create(new ItemPlacementContext(null, null, location, replaces, BlockFace.NORTH));
     }
 
     @Override

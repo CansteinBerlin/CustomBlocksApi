@@ -1,13 +1,13 @@
 package de.canstein_berlin.customblocksapi.test;
 
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.block.SimpleAnimatedBlock;
 import de.canstein_berlin.customblocksapi.api.block.properties.BooleanProperty;
 import de.canstein_berlin.customblocksapi.api.block.properties.Properties;
 import de.canstein_berlin.customblocksapi.api.block.properties.PropertyListBuilder;
 import de.canstein_berlin.customblocksapi.api.block.settings.BlockSettings;
 import de.canstein_berlin.customblocksapi.api.context.ActionResult;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
-import de.canstein_berlin.customblocksapi.api.tick.ITickable;
 import de.canstein_berlin.customblocksapi.api.tick.TickState;
 import de.canstein_berlin.customblocksapi.builder.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -17,7 +17,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 
-public class TestBlockTickable extends CustomBlock implements ITickable {
+public class TestBlockTickable extends SimpleAnimatedBlock {
 
     private static BooleanProperty ENABLED;
 
@@ -26,7 +26,7 @@ public class TestBlockTickable extends CustomBlock implements ITickable {
     }
 
     public TestBlockTickable(BlockSettings settings) {
-        super(settings, 7, new ItemBuilder(Material.DIAMOND).setCustomModelData(6).setDisplayName("§r§6" + settings.getName()).build());
+        super(settings, new ItemBuilder(Material.DIAMOND).setCustomModelData(6).setDisplayName("§r§6" + settings.getName()).build(), 10, 7, 6);
         setDefaultState(getDefaultState().with(ENABLED, false));
     }
 
@@ -55,21 +55,7 @@ public class TestBlockTickable extends CustomBlock implements ITickable {
     }
 
     @Override
-    public void onTick(TickState state) {
-        if (!state.getCustomBlockState().get(ENABLED)) {
-            setManualCustomModelData(7, state.getCustomBlockState().getDisplay());
-            return;
-        }
-
-        if (state.getCount() % 2 == 0) {
-            setManualCustomModelData(6, state.getCustomBlockState().getDisplay());
-        } else {
-            setManualCustomModelData(7, state.getCustomBlockState().getDisplay());
-        }
-    }
-
-    @Override
-    public int getTickDelay() {
-        return 10;
+    protected boolean shouldPlayFrames(TickState state) {
+        return state.getCustomBlockState().get(ENABLED);
     }
 }
