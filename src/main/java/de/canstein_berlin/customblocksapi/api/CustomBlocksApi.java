@@ -71,6 +71,11 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         return false;
     }
 
+    @Override
+    public boolean register(NamespacedKey key, CustomBlock customBlock) {
+        return register(key, customBlock, false);
+    }
+
     private void registerBlockTicker(CustomBlock customBlock) {
         if (!(customBlock instanceof ITickable)) return;
         new BukkitRunnable() {
@@ -268,10 +273,6 @@ public class CustomBlocksApi implements ICustomBlocksApi {
         customBlock.create(new ItemPlacementContext(null, null, location, replaces, BlockFace.NORTH));
     }
 
-    @Override
-    public boolean register(NamespacedKey key, CustomBlock customBlock) {
-        return register(key, customBlock, false);
-    }
 
     @Override
     public String getApiName() {
