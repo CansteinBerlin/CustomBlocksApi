@@ -1,21 +1,16 @@
 package de.canstein_berlin.customblocksapi;
 
-import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api_listener.BlockEventListener;
 import de.canstein_berlin.customblocksapi.api_listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.commands.CustomBlocksGUICommand;
 import de.canstein_berlin.customblocksapi.commands.GetCustomBlockCommand;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public final class CustomBlocksApiPlugin extends JavaPlugin {
 
     public static String PREFIX;
-
     private static CustomBlocksApiPlugin instance;
 
 
@@ -35,15 +30,6 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         //Register Api Listeners
         Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockEventListener(), this);
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendActionBar(Component.text("Mspt: " + (int) Bukkit.getAverageTickTime() + "; Cached Blocks: " + CustomBlocksApi.getInstance().cachedBlocks()));
-                }
-            }
-        }.runTaskTimer(this, 0, 1);
     }
 
     public static CustomBlocksApiPlugin getInstance() {
