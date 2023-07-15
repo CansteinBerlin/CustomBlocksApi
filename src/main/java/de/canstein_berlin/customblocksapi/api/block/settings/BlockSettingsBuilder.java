@@ -164,7 +164,7 @@ public class BlockSettingsBuilder {
             settings.setBreakInstantly(true);
         } else {
             size(1f, 1f);
-            if (settings.getBaseBlock().isAir()) {
+            if (settings.getBaseBlock().isAir() || !settings.getBaseBlock().isBlock()) {
                 settings.setBaseBlock(Material.STONE);
             }
         }

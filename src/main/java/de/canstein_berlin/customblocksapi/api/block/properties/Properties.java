@@ -1,7 +1,12 @@
 package de.canstein_berlin.customblocksapi.api.block.properties;
 
 import org.bukkit.Axis;
+import org.bukkit.Instrument;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.FaceAttachable;
+import org.bukkit.block.data.Rail;
+import org.bukkit.block.data.type.*;
 
 import java.util.List;
 
@@ -10,22 +15,193 @@ import java.util.List;
  */
 public class Properties {
 
-    public static DirectionProperty FACING; // NORTH, SOUTH, WEST, EAST
-    public static DirectionProperty DIRECTION; // NORTH, SOUTH, WEST, EAST, UP, DOWN
-    public static BooleanProperty POWERED; // true false
-    public static BooleanProperty ENABLED; // true, false
-    public static BooleanProperty BERRIES; // true, false
-    public static EnumProperty<Axis> AXIS; // x, y, z
-    public static EnumProperty<Axis> HORIZONTAL_AXIS; //x, z
+    public static final BooleanProperty ATTACHED = new BooleanProperty("attached");
+    public static final BooleanProperty BOTTOM = new BooleanProperty("bottom");
+    public static final BooleanProperty CONDITIONAL = new BooleanProperty("conditional");
+    public static final BooleanProperty DISARMED = new BooleanProperty("disarmed");
+    public static final BooleanProperty DRAG = new BooleanProperty("drag");
+    public static final BooleanProperty ENABLED = new BooleanProperty("enabled");
+    public static final BooleanProperty EXTENDED = new BooleanProperty("extended");
+    public static final BooleanProperty EYE = new BooleanProperty("eye");
+    public static final BooleanProperty FALLING = new BooleanProperty("falling");
+    public static final BooleanProperty HANGING = new BooleanProperty("hanging");
+    public static final BooleanProperty HAS_BOTTLE_0 = new BooleanProperty("has_bottle_0");
+    public static final BooleanProperty HAS_BOTTLE_1 = new BooleanProperty("has_bottle_1");
+    public static final BooleanProperty HAS_BOTTLE_2 = new BooleanProperty("has_bottle_2");
+    public static final BooleanProperty HAS_RECORD = new BooleanProperty("has_record");
+    public static final BooleanProperty HAS_BOOK = new BooleanProperty("has_book");
+    public static final BooleanProperty INVERTED = new BooleanProperty("inverted");
+    public static final BooleanProperty IN_WALL = new BooleanProperty("in_wall");
+    public static final BooleanProperty LIT = new BooleanProperty("lit");
+    public static final BooleanProperty LOCKED = new BooleanProperty("locked");
+    public static final BooleanProperty OCCUPIED = new BooleanProperty("occupied");
+    public static final BooleanProperty OPEN = new BooleanProperty("open");
+    public static final BooleanProperty PERSISTENT = new BooleanProperty("persistent");
+    public static final BooleanProperty POWERED = new BooleanProperty("powered");
+    public static final BooleanProperty SHORT = new BooleanProperty("short");
+    public static final BooleanProperty SIGNAL_FIRE = new BooleanProperty("signal_fire");
+    public static final BooleanProperty SNOWY = new BooleanProperty("snowy");
+    public static final BooleanProperty TRIGGERED = new BooleanProperty("triggered");
+    public static final BooleanProperty UNSTABLE = new BooleanProperty("unstable");
+    public static final BooleanProperty WATERLOGGED = new BooleanProperty("waterlogged");
+    public static final BooleanProperty VINE_END = new BooleanProperty("vine_end");
+    public static final BooleanProperty BERRIES = new BooleanProperty("berries");
+    public static final EnumProperty<Axis> HORIZONTAL_AXIS;
+    public static final EnumProperty<Axis> AXIS;
+    public static final BooleanProperty UP;
+    public static final BooleanProperty DOWN;
+    public static final BooleanProperty NORTH;
+    public static final BooleanProperty EAST;
+    public static final BooleanProperty SOUTH;
+    public static final BooleanProperty WEST;
+    public static final DirectionProperty FACING;
+    public static final DirectionProperty HOPPER_FACING;
+    public static final DirectionProperty HORIZONTAL_FACING;
+    public static final EnumProperty<Jigsaw.Orientation> ORIENTATION;
+    public static final EnumProperty<BlockFace> WALL_MOUNT_LOCATION;
+    public static final EnumProperty<FaceAttachable.AttachedFace> ATTACHMENT;
+    public static final EnumProperty<Wall.Height> EAST_WALL_SHAPE;
+    public static final EnumProperty<Wall.Height> NORTH_WALL_SHAPE;
+    public static final EnumProperty<Wall.Height> SOUTH_WALL_SHAPE;
+    public static final EnumProperty<Wall.Height> WEST_WALL_SHAPE;
+    public static final EnumProperty<RedstoneWire.Connection> EAST_WIRE_CONNECTION;
+    public static final EnumProperty<RedstoneWire.Connection> NORTH_WIRE_CONNECTION;
+    public static final EnumProperty<RedstoneWire.Connection> SOUTH_WIRE_CONNECTION;
+    public static final EnumProperty<RedstoneWire.Connection> WEST_WIRE_CONNECTION;
+    public static final EnumProperty<Bisected.Half> DOUBLE_BLOCK_HALF;
+    public static final EnumProperty<Bisected.Half> BLOCK_HALF;
+    public static final EnumProperty<Rail.Shape> RAIL_SHAPE;
+    public static final EnumProperty<Rail.Shape> STRAIGHT_RAIL_SHAPE;
+    public static final int AGE_1_MAX = 1;
+    public static final int AGE_2_MAX = 2;
+    public static final int AGE_3_MAX = 3;
+    public static final int AGE_5_MAX = 5;
+    public static final int AGE_7_MAX = 7;
+    public static final int AGE_15_MAX = 15;
+    public static final int AGE_25_MAX = 25;
+    public static final IntProperty AGE_1;
+    public static final IntProperty AGE_2;
+    public static final IntProperty AGE_3;
+    public static final IntProperty AGE_5;
+    public static final IntProperty AGE_7;
+    public static final IntProperty AGE_15;
+    public static final IntProperty AGE_25;
+    public static final IntProperty BITES;
+    public static final IntProperty CANDLES;
+    public static final IntProperty DELAY;
+    public static final int DISTANCE_1_7_MAX = 7;
+    public static final IntProperty DISTANCE_1_7;
+    public static final IntProperty EGGS;
+    public static final IntProperty HATCH;
+    public static final IntProperty LAYERS;
+    public static final int LEVEL_3_MIN = 0;
+    public static final int LEVEL_1_8_MIN = 1;
+    public static final int LEVEL_3_MAX = 3;
+    public static final int LEVEL_1_8_MAX = 8;
+    public static final IntProperty LEVEL_3;
+    public static final IntProperty LEVEL_8;
+    public static final IntProperty LEVEL_1_8;
+    public static final IntProperty HONEY_LEVEL;
+    public static final int LEVEL_15_MAX = 15;
+    public static final IntProperty LEVEL_15;
+    public static final IntProperty MOISTURE;
+    public static final IntProperty NOTE;
+    public static final IntProperty PICKLES;
+    public static final IntProperty POWER;
+    public static final IntProperty STAGE;
+    public static final int DISTANCE_0_7_MAX = 7;
+    public static final IntProperty DISTANCE_0_7;
+    public static final int CHARGES_MIN = 0;
+    public static final int CHARGES_MAX = 4;
+    public static final IntProperty CHARGES;
+    public static final int ROTATION_MAX = 15;
+    public static final IntProperty ROTATION;
+    public static final EnumProperty<Bed.Part> BED_PART;
+    public static final EnumProperty<Chest.Type> CHEST_TYPE;
+    public static final EnumProperty<Comparator.Mode> COMPARATOR_MODE;
+    public static final EnumProperty<Door.Hinge> DOOR_HINGE;
+    public static final EnumProperty<Instrument> INSTRUMENT;
+    public static final EnumProperty<TechnicalPiston.Type> PISTON_TYPE;
+    public static final EnumProperty<Slab.Type> SLAB_TYPE;
+    public static final EnumProperty<Stairs.Shape> STAIR_SHAPE;
+    public static final EnumProperty<StructureBlock.Mode> STRUCTURE_BLOCK_MODE;
+    public static final EnumProperty<Bamboo.Leaves> BAMBOO_LEAVES;
+    public static final EnumProperty<BigDripleaf.Tilt> TILT;
+    public static final DirectionProperty VERTICAL_DIRECTION;
+    public static final EnumProperty<PointedDripstone.Thickness> THICKNESS;
+    public static final EnumProperty<SculkSensor.Phase> SCULK_SENSOR_PHASE;
+
+    public Properties() {
+    }
 
     static {
-        FACING = new DirectionProperty("facing", List.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST));
-        DIRECTION = new DirectionProperty("direction", List.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST, BlockFace.UP, BlockFace.DOWN));
-        POWERED = new BooleanProperty("powered");
-        ENABLED = new BooleanProperty("enabled");
-        BERRIES = new BooleanProperty("berries");
-        AXIS = new EnumProperty<>("axis", Axis.class, List.of(Axis.X, Axis.Y, Axis.Z));
-        HORIZONTAL_AXIS = new EnumProperty<>("horizontal_axis", Axis.class, List.of(Axis.X, Axis.Z));
+        HORIZONTAL_AXIS = new EnumProperty("axis", Axis.class, List.of(Axis.X, Axis.Z));
+        AXIS = new EnumProperty("axis", Axis.class, List.of(Axis.X, Axis.Y, Axis.Z));
+        UP = new BooleanProperty("up");
+        DOWN = new BooleanProperty("down");
+        NORTH = new BooleanProperty("north");
+        EAST = new BooleanProperty("east");
+        SOUTH = new BooleanProperty("south");
+        WEST = new BooleanProperty("west");
+        FACING = new DirectionProperty("facing", List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN));
+        HOPPER_FACING = new DirectionProperty("facing", List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.DOWN));
+        HORIZONTAL_FACING = new DirectionProperty("facing", List.of(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST));
+        ORIENTATION = new EnumProperty("orientation", Jigsaw.Orientation.class);
+        WALL_MOUNT_LOCATION = new EnumProperty("face", BlockFace.class);
+        ATTACHMENT = new EnumProperty("attachment", FaceAttachable.AttachedFace.class);
+        EAST_WALL_SHAPE = new EnumProperty("east", Wall.Height.class);
+        NORTH_WALL_SHAPE = new EnumProperty("north", Wall.Height.class);
+        SOUTH_WALL_SHAPE = new EnumProperty("south", Wall.Height.class);
+        WEST_WALL_SHAPE = new EnumProperty("west", Wall.Height.class);
+        EAST_WIRE_CONNECTION = new EnumProperty("east", RedstoneWire.Connection.class);
+        NORTH_WIRE_CONNECTION = new EnumProperty("north", RedstoneWire.Connection.class);
+        SOUTH_WIRE_CONNECTION = new EnumProperty("south", RedstoneWire.Connection.class);
+        WEST_WIRE_CONNECTION = new EnumProperty("west", RedstoneWire.Connection.class);
+        DOUBLE_BLOCK_HALF = new EnumProperty("half", Bisected.Half.class);
+        BLOCK_HALF = new EnumProperty("half", Bisected.Half.class);
+        RAIL_SHAPE = new EnumProperty("shape", Rail.Shape.class);
+        STRAIGHT_RAIL_SHAPE = new EnumProperty("shape", Rail.Shape.class, List.of(Rail.Shape.ASCENDING_EAST, Rail.Shape.ASCENDING_NORTH, Rail.Shape.ASCENDING_SOUTH, Rail.Shape.ASCENDING_WEST, Rail.Shape.EAST_WEST, Rail.Shape.NORTH_SOUTH));
+        AGE_1 = new IntProperty("age", 0, 1);
+        AGE_2 = new IntProperty("age", 0, 2);
+        AGE_3 = new IntProperty("age", 0, 3);
+        AGE_5 = new IntProperty("age", 0, 5);
+        AGE_7 = new IntProperty("age", 0, 7);
+        AGE_15 = new IntProperty("age", 0, 15);
+        AGE_25 = new IntProperty("age", 0, 25);
+        BITES = new IntProperty("bites", 0, 6);
+        CANDLES = new IntProperty("candles", 1, 4);
+        DELAY = new IntProperty("delay", 1, 4);
+        DISTANCE_1_7 = new IntProperty("distance", 1, 7);
+        EGGS = new IntProperty("eggs", 1, 4);
+        HATCH = new IntProperty("hatch", 0, 2);
+        LAYERS = new IntProperty("layers", 1, 8);
+        LEVEL_3 = new IntProperty("level", 1, 3);
+        LEVEL_8 = new IntProperty("level", 0, 8);
+        LEVEL_1_8 = new IntProperty("level", 1, 8);
+        HONEY_LEVEL = new IntProperty("honey_level", 0, 5);
+        LEVEL_15 = new IntProperty("level", 0, 15);
+        MOISTURE = new IntProperty("moisture", 0, 7);
+        NOTE = new IntProperty("note", 0, 24);
+        PICKLES = new IntProperty("pickles", 1, 4);
+        POWER = new IntProperty("power", 0, 15);
+        STAGE = new IntProperty("stage", 0, 1);
+        DISTANCE_0_7 = new IntProperty("distance", 0, 7);
+        CHARGES = new IntProperty("charges", 0, 4);
+        ROTATION = new IntProperty("rotation", 0, 15);
+        BED_PART = new EnumProperty("part", Bed.Part.class);
+        CHEST_TYPE = new EnumProperty("type", Chest.Type.class);
+        COMPARATOR_MODE = new EnumProperty("mode", Comparator.Mode.class);
+        DOOR_HINGE = new EnumProperty("hinge", Door.Hinge.class);
+        INSTRUMENT = new EnumProperty("instrument", Instrument.class);
+        PISTON_TYPE = new EnumProperty("type", TechnicalPiston.Type.class);
+        SLAB_TYPE = new EnumProperty("type", Slab.Type.class);
+        STAIR_SHAPE = new EnumProperty("shape", Stairs.Shape.class);
+        STRUCTURE_BLOCK_MODE = new EnumProperty("mode", StructureBlock.Mode.class);
+        BAMBOO_LEAVES = new EnumProperty("leaves", Bamboo.Leaves.class);
+        TILT = new EnumProperty("tilt", BigDripleaf.Tilt.class);
+        VERTICAL_DIRECTION = new DirectionProperty("vertical_direction", List.of(BlockFace.UP, BlockFace.DOWN));
+        THICKNESS = new EnumProperty("thickness", PointedDripstone.Thickness.class);
+        SCULK_SENSOR_PHASE = new EnumProperty("sculk_sensor_phase", SculkSensor.Phase.class);
     }
 
 }

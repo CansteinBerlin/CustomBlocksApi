@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,10 @@ public class EnumProperty<T extends Enum<T>> extends Property<T> {
             }
             byName.put(_name, value);
         }
+    }
+
+    public EnumProperty(String name, Class<T> type) {
+        this(name, type, List.of(type.getEnumConstants()));
     }
 
     @Override

@@ -23,12 +23,12 @@ public class BlockSettings {
 
 
     protected BlockSettings() { // Empty Block Settings
-        baseBlock = Material.AIR;
+        baseBlock = Material.STONE;
         displayMaterial = Material.STICK;
         usesNeighborUpdateEvent = false;
         usesEntityMovementEvent = false;
-        name = "Custom Block#" + ((int) (Math.random() * 999));
-        dropsWhenExploded = false;
+        name = "Custom Block#" + ((int) (Math.random() * 99999));
+        dropsWhenExploded = true;
         noBaseBlock = false;
         width = 1;
         height = 1;
@@ -134,5 +134,21 @@ public class BlockSettings {
 
     public boolean isBreakInstantly() {
         return breakInstantly;
+    }
+
+    public BlockSettings clone() {
+        BlockSettings settings = new BlockSettings();
+        settings.setBaseBlock(baseBlock);
+        settings.setBreakInstantly(breakInstantly);
+        settings.setName(name);
+        settings.setBreakSound(breakSound);
+        settings.setPlaceSound(placeSound);
+        settings.setSize(width, height);
+        settings.setUsesEntityMovementEvent(usesEntityMovementEvent);
+        settings.setUsesNeighborUpdateEvent(usesNeighborUpdateEvent);
+        settings.setDisplayMaterial(displayMaterial);
+        settings.setDropsWhenExploded(dropsWhenExploded);
+        settings.setNoBaseBlock(noBaseBlock);
+        return settings;
     }
 }
