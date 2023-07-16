@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -35,8 +36,9 @@ public class BlockManageListener implements Listener {
      *
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
         NamespacedKey key = ICustomBlocksApi.getKeyFromPersistentDataContainer(event.getItemInHand().getItemMeta().getPersistentDataContainer());
         if (key == null) return;
 
@@ -51,7 +53,7 @@ public class BlockManageListener implements Listener {
      *
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemUse(PlayerInteractEvent event) { // Items placed on solid blocks
         if (event.isCancelled()) return; // Interacting with other custom Blocks
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return; // Ignore Left Click
@@ -109,7 +111,7 @@ public class BlockManageListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlaceBlockOnOther(PlayerInteractAtEntityEvent event) {
         if (event.isCancelled()) return; // Interacting with other custom Blocks
         if (!event.getHand().equals(EquipmentSlot.HAND)) return; //Only use Main Hand.
@@ -213,8 +215,9 @@ public class BlockManageListener implements Listener {
      *
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled()) return;
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
         if (state == null) return;
 
@@ -224,8 +227,9 @@ public class BlockManageListener implements Listener {
         else event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockExplode(BlockExplodeEvent event) {
+        if (event.isCancelled()) return;
         for (Block block : event.blockList()) {
             CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(block.getLocation());
             if (state == null) continue;
@@ -237,8 +241,9 @@ public class BlockManageListener implements Listener {
         removeBlocksInExplosionRange(event.getBlock().getWorld(), BoundingBox.of(event.getBlock().getLocation().add(0.5, 0.5, 0.5), 0.5, 0.5, 0.5), 5f);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.isCancelled()) return;
         for (Block block : event.blockList()) {
             CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(block.getLocation());
             if (state == null) continue;
@@ -282,8 +287,9 @@ public class BlockManageListener implements Listener {
     }
 
     //No Base block entities
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerAttackInteraction(EntityDamageByEntityEvent event) {
+        if (event.isCancelled()) return;
         if (!(event.getDamager() instanceof Player)) return; // Player in the attacker
         if (!(event.getEntity() instanceof Interaction)) return; // Attack Interaction entity
 
@@ -297,30 +303,34 @@ public class BlockManageListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityBlockForm(EntityBlockFormEvent event) {
+        if (event.isCancelled()) return;
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
         if (state == null) return;
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityBlockForm(EntityChangeBlockEvent event) {
+        if (event.isCancelled()) return;
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
         if (state == null) return;
         event.setCancelled(true);
         event.getEntity().getWorld().dropItem(event.getBlock().getLocation().add(0.5, 0.5, 0.5), new ItemStack(event.getTo()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockForm(BlockFormEvent event) {
+        if (event.isCancelled()) return;
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getBlock().getLocation());
         if (state == null) return;
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockFromTo(BlockFromToEvent event) {
+        if (event.isCancelled()) return;
         CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(event.getToBlock().getLocation());
         if (state == null) return;
         event.setCancelled(true);
@@ -347,8 +357,9 @@ public class BlockManageListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreakBlockInstantly(PlayerInteractEvent event) {
+        if (event.isCancelled()) return;
         if (!event.getAction().equals(Action.LEFT_CLICK_BLOCK)) return;
         if (event.getClickedBlock() == null) return;
 
@@ -360,7 +371,7 @@ public class BlockManageListener implements Listener {
         if (!stillAlive) state.remove(event.getClickedBlock().getLocation(), true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTickableLoad(EntitiesLoadEvent event) {
         for (Entity e : event.getEntities()) {
             if (!(e instanceof ItemDisplay)) continue;
@@ -370,7 +381,7 @@ public class BlockManageListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTickableUnload(EntitiesUnloadEvent event) {
         for (Entity e : event.getEntities()) {
             if (!(e instanceof ItemDisplay)) continue;
