@@ -4,11 +4,13 @@ import de.canstein_berlin.customblocksapi.CustomBlocksApiPlugin;
 import de.canstein_berlin.customblocksapi.api.CustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.ICustomBlocksApi;
 import de.canstein_berlin.customblocksapi.api.block.CustomBlock;
+import de.canstein_berlin.customblocksapi.api.block.drops.IDrop;
 import de.canstein_berlin.customblocksapi.api.context.ItemPlacementContext;
 import de.canstein_berlin.customblocksapi.api.state.CustomBlockState;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +25,8 @@ import org.bukkit.event.world.EntitiesLoadEvent;
 import org.bukkit.event.world.EntitiesUnloadEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.loot.LootContext;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -223,8 +227,20 @@ public class BlockManageListener implements Listener {
 
         //Remove Block
         boolean stillAlive = state.getParentBlock().onBreak(state, event.getBlock().getWorld(), event.getBlock().getLocation(), event.getPlayer());
-        if (!stillAlive) state.remove(event.getBlock().getLocation(), true);
-        else event.setCancelled(true);
+        if (!stillAlive) {
+            state.remove(event.getBlock().getLocation(), false);
+            if (event.isDropItems()) {
+                LootContext context = new LootContext.Builder(event.getBlock().getLocation())
+                        .lootingModifier(event.getPlayer().getInventory().getItem(EquipmentSlot.HAND).getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS))
+                        .luck(event.getPlayer().getPotionEffect(PotionEffectType.LUCK) == null ? 0 : event.getPlayer().getPotionEffect(PotionEffectType.LUCK).getAmplifier())
+                        .build();
+                for (IDrop drop : state.getParentBlock().getDrops()) {
+                    for (ItemStack stack : drop.getStacks(context)) {
+                        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation().toBlockLocation(), stack);
+                    }
+                }
+            }
+        } else event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

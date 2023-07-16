@@ -361,4 +361,8 @@ public class CustomBlock {
     public ItemStack getMainPlaceItemStack() {
         return mainPlaceItemStack;
     }
+
+    public List<IDrop> getDrops() {
+        return drops;
+    }
 }
