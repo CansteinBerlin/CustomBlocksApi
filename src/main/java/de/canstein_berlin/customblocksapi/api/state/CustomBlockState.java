@@ -98,7 +98,7 @@ public class CustomBlockState {
     public CustomBlockState clone() {
         if (display != null)
             return new CustomBlockState(parentBlock, display, interaction, location, (HashMap<Property<?>, Property.Value<?>>) Map.copyOf(propertyValues), updated);
-        return new CustomBlockState(this.parentBlock, (HashMap<Property<?>, Property.Value<?>>) Map.copyOf(propertyValues));
+        return new CustomBlockState(this.parentBlock, new HashMap<>(Map.copyOf(propertyValues)));
     }
 
     public <T extends Comparable<T>, V extends T> CustomBlockState with(Property<T> property, V value) {

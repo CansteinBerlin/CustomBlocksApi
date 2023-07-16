@@ -336,7 +336,7 @@ public class CustomBlock {
     }
 
     public CustomBlockState getDefaultState() {
-        return defaultState;
+        return defaultState.clone();
     }
 
     public void redraw(CustomBlockState state, ItemDisplay display) {
