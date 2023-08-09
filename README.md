@@ -34,7 +34,7 @@ After that you need to add the dependency:
 <dependency>
     <groupId>de.canstein_berlin</groupId>
     <artifactId>CustomBlocksApi</artifactId>
-    <version>0.1.0-alpha</version>
+    <version>1.0.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -47,7 +47,7 @@ looks like this
 
 ```groovy
 dependencies {
-    implementation 'de.canstein_berlin:CustomBlocksApi:0.1.0-alpha'
+    implementation 'de.canstein_berlin:CustomBlocksApi:1.0.0'
     // ...
 }
 ```
