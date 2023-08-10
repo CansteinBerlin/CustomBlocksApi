@@ -1,6 +1,6 @@
 # Custom Blocks Api
 
-*This api works for minecraft versions 1.19.4*
+*This api works for minecraft versions 1.19.4, 1.20, 1.20.1*
 
 An API for easily creating custom blocks that is heavily inspired by the Fabric API.
 For information on how to use this API, see the GitHub wiki.
