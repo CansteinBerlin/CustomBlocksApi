@@ -15,7 +15,7 @@ For information on how to use this API, see the GitHub wiki.
 ## Screenshots
 
 <details><summary> Grape Block </summary>
-    <img align="middle" src="https://github.com/CansteinBerlin/CustomBlocksApi/blob/main/images/grapes.png" height="200">
+    <img align="middle" src="https://github.com/CansteinBerlin/CustomBlocksApi/blob/master/images/grapes.png" height="200">
     <blockquote><details><summary> Code </summary>
 
 ~~~java
@@ -84,7 +84,7 @@ public class GrapesBlock extends CustomBlock {
 </details></blockquote></details>
 
 <details><summary> Animated Computer Block </summary>
-    <img align="middle" src="https://github.com/CansteinBerlin/CustomBlocksApi/blob/main/images/computer.png" height="200">
+    <img align="middle" src="https://github.com/CansteinBerlin/CustomBlocksApi/blob/master/images/computer.png" height="200">
     <blockquote><details><summary> Code </summary>
 
 ~~~java
