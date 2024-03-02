@@ -393,7 +393,9 @@ public class BlockManageListener implements Listener {
             if (!(e instanceof ItemDisplay)) continue;
 
             //Get State and Register
-            CustomBlocksApi.getInstance().getStateFromWorld(e);
+            CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(e);
+            if (state == null) continue;
+            state.getParentBlock().onLoad(state, event.getWorld());
         }
     }
 
@@ -406,6 +408,7 @@ public class BlockManageListener implements Listener {
             CustomBlockState state = CustomBlocksApi.getInstance().getStateFromWorld(e);
             if (state == null) continue;
             CustomBlocksApi.getInstance().removeTickedBlock(state.getParentBlock(), state);
+            state.getParentBlock().onUnload(state, event.getWorld());
         }
     }
 

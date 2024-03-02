@@ -318,6 +318,24 @@ public class CustomBlock {
     public void applyInitialModelTransformations(ItemDisplay display) {
     }
 
+    /**
+     * This method is called when a customblock is loaded.
+     *
+     * @param block
+     * @param world
+     */
+    public void onLoad(CustomBlockState block, World world) {
+    }
+
+    /**
+     * This method is called when a customblock is unloaded
+     *
+     * @param state
+     * @param world
+     */
+    public void onUnload(CustomBlockState state, World world) {
+    }
+
     public NamespacedKey getKey() {
         return key;
     }

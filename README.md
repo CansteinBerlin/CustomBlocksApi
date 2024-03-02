@@ -5,6 +5,10 @@
 An API for easily creating custom blocks that is heavily inspired by the Fabric API.
 For information on how to use this API, see the GitHub wiki.
 
+## Features
+
+*
+
 ## Commands
 
 | Command                 | Description                                                                     | Permission                  |
@@ -12,7 +16,7 @@ For information on how to use this API, see the GitHub wiki.
 | /listCustomBlocks       | Displays a Gui listing all Custom Blocks. Use left click to get a custom block. | `customblocks.commands.gui` |
 | /getCustomBlock <block> | Get the custom block provided.                                                  | `customblocks.commands.get` |
 
-## Screenshots
+## Screenshots / Examples
 
 <details><summary> Grape Block </summary>
     <img align="middle" src="https://github.com/CansteinBerlin/CustomBlocksApi/blob/master/images/grapes.png" height="200">
