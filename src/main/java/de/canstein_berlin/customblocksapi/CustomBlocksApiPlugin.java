@@ -4,6 +4,7 @@ import de.canstein_berlin.customblocksapi.api_listener.BlockEventListener;
 import de.canstein_berlin.customblocksapi.api_listener.BlockManageListener;
 import de.canstein_berlin.customblocksapi.commands.CustomBlocksGUICommand;
 import de.canstein_berlin.customblocksapi.commands.GetCustomBlockCommand;
+import de.canstein_berlin.customblocksapi.commands.ReplaceCustomBlocksCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,8 @@ public final class CustomBlocksApiPlugin extends JavaPlugin {
         getCommand("listCustomBlocks").setExecutor(new CustomBlocksGUICommand());
         getCommand("getCustomBlock").setExecutor(new GetCustomBlockCommand());
         getCommand("getCustomBlock").setTabCompleter(new GetCustomBlockCommand());
+        getCommand("replaceCustomBlock").setExecutor(new ReplaceCustomBlocksCommand());
+        getCommand("replaceCustomBlock").setTabCompleter(new ReplaceCustomBlocksCommand());
 
         //Register Api Listeners
         Bukkit.getPluginManager().registerEvents(new BlockManageListener(), this);

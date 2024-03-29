@@ -8,3 +8,5 @@ commands:
     description: "Command to show all registered custom blocks"
   getCustomBlock:
     description: "Get a specific custom block"
+  replaceCustomBlock:
+    description: "Replaces a specified block in a Worldedit Region to custom blocks"

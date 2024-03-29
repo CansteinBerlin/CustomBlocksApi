@@ -10,3 +10,8 @@ lang:
       invalidCommand: "&cInvalid command. Please use &6/getcustomblock <key>"
       invalidKey: "&cUnknown Custom Block Key &6%key%"
       success: "&6Successfully retrieved custom block §6%block%"
+    replace:
+      invalidCommand: "&cInvalid command. Please use &6/replacecustomblocks <origin> <toReplaceTo>"
+      invalidMaterial: "&cUnknown material to replace: %material%"
+      invalidKey: "&cInvalid block key: %key%"
+      success: "&aReplaced %amount% blocks in %seconds% seconds"
