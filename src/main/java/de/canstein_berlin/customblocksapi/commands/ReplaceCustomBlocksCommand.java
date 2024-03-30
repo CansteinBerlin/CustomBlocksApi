@@ -25,10 +25,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReplaceCustomBlocksCommand implements CommandExecutor, TabExecutor {
@@ -110,10 +107,11 @@ public class ReplaceCustomBlocksCommand implements CommandExecutor, TabExecutor 
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] strings) {
         if (strings.length == 1) {
             return Arrays.stream(Material.values())
                     .map(Material::name)
+                    .filter(s -> s.toLowerCase(Locale.ROOT).startsWith(strings[0].toLowerCase()))
                     .sorted()
                     .collect(Collectors.toList());
         }
@@ -121,6 +119,7 @@ public class ReplaceCustomBlocksCommand implements CommandExecutor, TabExecutor 
             return CustomBlocksApi.getInstance().getAllCustomBlocks().stream()
                     .map(CustomBlock::getKey)
                     .map(NamespacedKey::asString)
+                    .filter(s -> s.toLowerCase(Locale.ROOT).startsWith(strings[1].toLowerCase()))
                     .sorted()
                     .collect(Collectors.toList());
         }
