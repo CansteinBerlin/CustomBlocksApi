@@ -6,7 +6,10 @@ api-version: 1.19
 commands:
   listCustomBlocks:
     description: "Command to show all registered custom blocks"
+    usage: "/listcustomblocks"
   getCustomBlock:
     description: "Get a specific custom block"
+    usage: "/getcustomblock <id>"
   replaceCustomBlock:
     description: "Replaces a specified block in a Worldedit Region to custom blocks"
+    usage: "/replacecustomblock <id>"
