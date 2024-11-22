@@ -1,20 +1,22 @@
 # Custom Blocks Api
 
-*This api works for minecraft versions 1.19.4, 1.20, 1.20.1*
+*This api works for minecraft versions 1.19.4, 1.20.x, 1.21.x*
 
 An API for easily creating custom blocks that is heavily inspired by the Fabric API.
 For information on how to use this API, see the GitHub wiki.
 
 ## Features
 
-*
+- Easily define and implement custom blocks with minimal effort.
+- Seamlessly integrates with Minecraft's existing mechanics and systems.
+- Supports a GUI for browsing and obtaining custom blocks.
 
 ## Commands
 
 | Command                 | Description                                                                     | Permission                  |
 |-------------------------|---------------------------------------------------------------------------------|-----------------------------|
-| /listCustomBlocks       | Displays a Gui listing all Custom Blocks. Use left click to get a custom block. | `customblocks.commands.gui` |
-| /getCustomBlock <block> | Get the custom block provided.                                                  | `customblocks.commands.get` |
+| /listCustomBlocks       | Opens a GUI listing all custom blocks. Use left-click to obtain a block.        | `customblocks.commands.gui` |
+| /getCustomBlock <block> | Provides the specified custom block directly.                                   | `customblocks.commands.get` |
 
 ## Screenshots / Examples
 
