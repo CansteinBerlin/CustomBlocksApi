@@ -58,7 +58,7 @@ public class ListCustomBlocksGUI extends ChestGui {
 
             update();
         }), 0, 0);
-        navigation.addItem(new GuiItem(new ItemBuilder(Material.LIME_WOOL).setDisplayName("§aNextPage Page").build(), event ->
+        navigation.addItem(new GuiItem(new ItemBuilder(Material.LIME_WOOL).setDisplayName("§aNext Page").build(), event ->
         {
             if (pages.getPage() < pages.getPages() - 1) {
                 pages.setPage(pages.getPage() + 1);
